@@ -15,6 +15,7 @@ Software application for the investigation projects development
 
 
 * Wilson Alejandro Fino Tarazona
+* Lennys Caré 
 
 ## Scrum roles
 |Rol | Sprint #1
