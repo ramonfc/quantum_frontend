@@ -11,6 +11,8 @@ Software application for the investigation projects development
 
 ## Team Development
 
+* Ramón Castaño
+
 
 * Wilson Alejandro Fino Tarazona
 
