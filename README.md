@@ -19,6 +19,7 @@ Software application for the investigation projects development
 - Javier Mauricio Bedoya
 - Wilson Alejandro Fino Tarazona
 - Lennys Caré
+- Miguel Angel Sánchez Ramírez
 
 ## Scrum roles
 
