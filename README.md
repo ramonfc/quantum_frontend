@@ -15,7 +15,7 @@ Software application for the investigation projects development
 ## Team Development
 
 - Ramón Castaño
-
+- Jhon Aldana
 - Javier Mauricio Bedoya
 - Wilson Alejandro Fino Tarazona
 - Lennys Caré
@@ -30,6 +30,7 @@ Software application for the investigation projects development
 | Product Owner          | Wilson Alejandro Fino |
 | Scrum Master           | Ramón Castaño         |
 | Analyst                | Lennys Caré           |
+| Scrum Master           | Jhon Aldana           |
 
 ## Team Tools
 
