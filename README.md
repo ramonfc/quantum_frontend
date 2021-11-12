@@ -20,7 +20,7 @@ Software application for the investigation projects development
 |Analyst |Miguel Sánchez
 |Database Administrator |Javier Bedoya
 |Developer |All
-|Product Owner |Wilson Fino
+|Product Owner |Wilson Alejandro Fino
 |Scrum Master |Ramón Castaño
 |Analyst |Lennys Caré
 
