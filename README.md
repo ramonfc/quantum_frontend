@@ -12,6 +12,8 @@ Software application for the investigation projects development
 ## Team Development
 
 
+* Wilson Alejandro Fino Tarazona
+
 ## Scrum roles
 |Rol | Sprint #1
 |--|--|
