@@ -25,7 +25,7 @@ import {
 } from "reactstrap";
 import { getIdentificacion } from 'helpers/localStorage';
 
-
+import { Link } from 'react-router-dom';
 
 /* const BASE_URL = process.env.REACT_APP_BASE_URL;
 //const BASE_URL = "http://localhost:3000/";
@@ -390,7 +390,10 @@ console.log("i:",id);
     return <div className="table-responsive"><br />
        
 
-
+        <div>
+            <Link to={`profile/${listaUsuarios[0].nombre}`}><button>SOY UN BOTTON</button></Link>
+            <Link to = {`profile/${listaUsuarios[0].nombre}`} >EDITARR</Link>
+        </div>
         {<DataTable
             columns={columnas}
             data={listaUsuarios}

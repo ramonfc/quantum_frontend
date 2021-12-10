@@ -15,6 +15,8 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import EditProfile from "components/EditProfile/EditProfile";
 import { getIdentificacion } from "helpers/localStorage";
+import Carrusel from "components/Carrusel/Carrusel";
+import { Switch, Route, Redirect } from "react-router-dom";
 
 const styles = {
   cardCategoryWhite: {
@@ -87,9 +89,28 @@ const useStyles = makeStyles(styles);
 const i = getIdentificacion();
 
 export default function UpgradeToPro() {
+
+  const switchRoutes = (
+    <Switch>
+
+            <Route
+              exact path='user/profile/edit'
+              component={Carrusel}
+            />
+         
+       {/* <Route exact path = '/user/profile/edit' component={Carrusel}></Route> */}
+       
+    
+    </Switch>
+  );
+
+
+
+
   const classes = useStyles();
   return (
     <GridContainer justify="center">
+      <div >{switchRoutes}</div>
       <GridItem xs={12} sm={12} md={8}>
         <Card>
           <CardHeader color="info">

@@ -21,6 +21,8 @@ import Login from "layouts/Login.js";
 
 import "assets/css/material-dashboard-react.css?v=1.10.0";
 import rtlStyle from "assets/jss/material-dashboard-react/views/rtlStyle";
+//import carruselListar from './components/carruselListar/carruselListar'
+
 
 import {
   ApolloClient,
@@ -39,9 +41,11 @@ ReactDOM.render(
   <ApolloProvider client={client}>
   <BrowserRouter>
     <Switch>
-      <Route path="/user" component={Admin1} />
-      <Route path="/login" component={Login} />
-      <Route path="/" component={Login} />
+      <Route  path="/user" component={Admin1} />
+      <Route  path="/login" component={Login} />
+      <Route  path='/carrusel' component={Carrusel}/>
+      {/* <Route  path='/carrusel/listar' component={carruselListar}/> */}
+      <Route  path="/" component={Login} />
       <Redirect from="/" to="/login" />
     </Switch>
   </BrowserRouter>

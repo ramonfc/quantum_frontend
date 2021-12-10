@@ -51,8 +51,8 @@ const dashboardRoutes = [
     permisos: 'admin, bodega'
   },
   {
-    path: "/list-products",
-    name: "Listar Productos",
+    path: "/list-projects",
+    name: "Listar Proyectos",
     icon: ListAlt,
     component: TableList,
     layout: "/user",

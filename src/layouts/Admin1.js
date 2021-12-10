@@ -9,7 +9,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import Navbar from "components/Navbars/Navbar.js";
 import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
-
+import Carrusel from 'components/Carrusel/Carrusel'
+import EditarProyecto from 'components/EditarProyecto/EditarProyecto.js'
 
 import routes from "../../src/routes.js";
 let rutasModificadas = [];
@@ -18,6 +19,7 @@ import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
 
 import bgImage from "assets/img/sidebar-2.jpg";
 import logo from "assets/img/logoinvertido.png";
+//import carruselListar from "components/carruselListar/carruselListar.js";
 
 
 let ps;
@@ -59,7 +61,7 @@ export default function Admin1({ ...rest }) {
           rutasModificadas.push(ruta);
           return (
             <Route
-              path={ruta.layout + ruta.path}
+              exact path={ruta.layout + ruta.path}
               component={ruta.component}
               key={key}
 
@@ -68,7 +70,14 @@ export default function Admin1({ ...rest }) {
         }else{return null;}
         
       })}
-  {    <Redirect from="/user" to="/user/dashboard" />}
+       <Route exact path = '/user/list-projects/:identificador' component={EditarProyecto}></Route>
+       {/* <Route exact path = '/user/profile/:nombre' component={carruselListar}></Route>
+       <Route exact path = '/user/proyecto/edit' component={carruselListar}></Route>
+       <Route exact path = '/user/usuario/edit' component={carruselListar}></Route>
+       <Route exact path = '/user/inscripcion/edit' component={carruselListar}></Route>
+       <Route exact path = '/user/avance/edit' component={carruselListar}></Route> */}
+       
+      <Redirect from="/user" to="/user/dashboard" />
     </Switch>
   );
 
