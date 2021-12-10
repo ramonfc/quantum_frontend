@@ -47,9 +47,36 @@ const columnas = [
         selector: 'presupuesto',
         sorteable: true
     },
+    {
+        name: 'Estado',
+        selector: 'estado',
+        sorteable: true
+    },
+    {
+        name: "Action",
+        cell: (row: { _id: any }) => (
+            <>
+                <span onClick={() => handleButtonClick()} className='btn btn-primary'>A/D</span>{'     '}
+                
+            </>
+        ),
 
+        ignoreRowClick: true,
+        allowOverflow: true,
+        button: true,
+    }
 
 ]
+
+const handleButtonClick = ()=>{
+    // if(form.estado == 'ACTIVO')
+    //     form.estado = 'DESAC'
+    // else{
+    //     form.estado = 'ACTIVO'
+    // }
+    alert('ayudaaaa')
+}
+
 
 const paginacionopciones = {
     rowsPerPageText: "Filas por pagina",
@@ -67,6 +94,7 @@ const PROYECTOS = gql`
             nombre
             integrantes
             presupuesto
+            estado
             avances {
                 fecha
                 descripcion
@@ -237,8 +265,8 @@ const ListProducts1 = props => {
     const history = useHistory();
     const mostrarModalActualizar = useCallback(() => {
 
-        
-        console.log('soy indefinido',dato.current[0].identificador)
+
+        console.log('soy indefinido', dato.current[0].identificador)
         history.push(`list-projects/${dato.current[0].identificador}`)
         // dato.current.map(registro => {
         //     setModalActualizar(true);
@@ -358,14 +386,14 @@ const ListProducts1 = props => {
             onSelectedRowsChange={handleChange}
             fixedHeaderScrollHeight="600px"
             noDataComponent="No se encontraron productos" />
-        
+
         <button type="button" name="editar" className="btnUtil" disabled={editar} onClick={() => mostrarModalActualizar(dato.current)}>
             Editar
         </button>
 
-        <button type="button" name="borrar" className="btnUtil" disabled={borrar} onClick={() => handleDelete(dato.current)}>
+        {/* <button type="button" name="borrar" className="btnUtil" disabled={borrar} onClick={() => handleDelete(dato.current)}>
             Borrar
-        </button>
+        </button> */}
 
         <div>
 
