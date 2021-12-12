@@ -1,0 +1,116 @@
+
+ .login-logo {
+   width: 30%;
+   height: auto;
+}
+ 
+ .login-page {
+    padding: 2% 0 0;
+    margin: 0 auto 100px;
+    max-width: 360px;
+    position: relative;
+  }
+   
+  .login-form {
+     border: rgba(0, 191, 255, 0.815);
+  }
+   
+  .login-form-header {
+     padding-top: 16px;
+  }
+   
+  .login-form-row {
+     padding-top: 16px;
+     padding-bottom: 16px;
+  }
+   
+  .login-form-font-header {
+     font-size:30px; 
+     font-weight: bold;
+  }
+ 
+  .img-login-logo{
+      margin-top: 5%;
+      width: 30%;
+      height: auto;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+  }
+
+  /*Estilos Login 
+  https://codepen.io/Tushkiz/pen/xqfsy/
+  */
+/*  
+  * {
+   box-sizing: border-box;
+   }
+   
+   *:focus {
+      outline: none;
+   }
+ 
+   .login {
+   margin: 0px auto;
+   width: 600px;
+   }
+   .login-screen {
+   background-color: #FFF;
+   padding: 20px;
+   border-radius: 5px
+   }
+   
+   .app-title {
+   text-align: center;
+   color: #777;
+   }
+   
+   .login-form {
+   text-align: center;
+   }
+   .control-group {
+   margin-bottom: 10px;
+   }
+    */
+   input {
+   text-align: center;
+   background-color: #ECF0F1;
+   border: 2px solid transparent;
+   border-radius: 3px;
+   font-size: 16px;
+   font-weight: 200;
+   padding: 10px 0;
+   width: 80%;
+   transition: border .5s;
+   }
+   
+   input:focus {
+   border: 2px solid #b4b4b4;
+   box-shadow: none;
+   }
+   
+   .btn {
+     border: 2px solid transparent;
+     background: #0ec4e9;
+     color: #ffffff;
+     font-size: 16px;
+     line-height: 25px;
+     padding: 10px 0;
+     text-decoration: none;
+     text-shadow: none;
+     border-radius: 3px;
+     box-shadow: none;
+     transition: 0.25s;
+     display: block;
+     width: 80%;
+     margin: 0 auto;
+   }
+   
+   .btn:hover {
+     background-color: #1b1a1a;
+     color: white;
+     border: 2px solid transparent;
+   }
+   
+ /* ASDNASJDBAJS*/
+ 
