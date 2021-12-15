@@ -13,7 +13,7 @@ import GridContainer from "components/Grid/GridContainer.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
-import EditProfile from "components/EditProfile/EditProfile";
+import ShowProfile from "components/ShowProfile/ShowProfile";
 import { getIdentificacion } from "helpers/localStorage";
 import Carrusel from "components/Carrusel/Carrusel";
 import { Switch, Route, Redirect } from "react-router-dom";
@@ -86,7 +86,13 @@ const styles = {
 };
 
 const useStyles = makeStyles(styles);
-const i = getIdentificacion();
+
+const obtenerId = ()=>{
+  const i = getIdentificacion();
+  console.log("i desde UpgradeToPro: ",i)
+  return i;
+}
+
 
 export default function UpgradeToPro() {
 
@@ -110,7 +116,7 @@ export default function UpgradeToPro() {
   const classes = useStyles();
   return (
     <GridContainer justify="center">
-      <div >{switchRoutes}</div>
+     
       <GridItem xs={12} sm={12} md={8}>
         <Card>
           <CardHeader color="info">
@@ -122,7 +128,7 @@ export default function UpgradeToPro() {
             </p>
           </CardHeader>
           <CardBody>
-            <EditProfile id = {i}/>
+            <ShowProfile id = {obtenerId()}/>
            
             {/* <div className={classes.tableUpgradeWrapper}>
               <table className={classes.table}>
