@@ -27,10 +27,6 @@ import { getIdentificacion } from 'helpers/localStorage';
 
 import { Link } from 'react-router-dom';
 
-/* const BASE_URL = process.env.REACT_APP_BASE_URL;
-//const BASE_URL = "http://localhost:3000/";
-console.log(BASE_URL);
-const PATH_CUSTOMERS = 'users'; */
 
 const columnas = [
     {
@@ -93,9 +89,6 @@ const ShowProfile = (props) => {
     console.log("Props:",props);
     const id = props.id
 
-    /*  const auth = getAuth();
-     const [user, loading, error] = useAuthState(auth);
-     const history = useHistory(); */
     const [newVal, setNewVal] = React.useState(0);
     const [isLoaded, setIsLoaded] = React.useState(false);
 
@@ -119,34 +112,7 @@ const ShowProfile = (props) => {
         if (!user) return history.replace("/");
     }, [user, loading]); */
 
-    /* React.useEffect(() => {
-        if (!user) return history.replace("/");
-        user.getIdToken(true).then(token => {
-            const requestOptions = {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-            };
-            fetch(`${BASE_URL}${PATH_CUSTOMERS}`, requestOptions)
-                .then(res => res.json())
-                .then(
-                    (result) => {
-                        setIsLoaded(true);
-                        setUsuarios({
-                            ...usuarios,
-                            data: result
-                        });
-                    },
-                    (error) => {
-                        setIsLoaded(true);
-                        setErrors(error);
-                    }
-                )
-        });
-    }, [newVal]);
- */
+   
 
     useEffect(() => {
         console.log("Cargando usuarios")
@@ -246,27 +212,7 @@ const ShowProfile = (props) => {
     });
 
 
-    /* const eliminarUsuario = useCallback((idAEliminar) => {
-        // Simple POST request with a JSON body using fetch
-        user.getIdToken(true).then(token => {
-            const requestOptions = {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-
-            }; //console.log(requestOptions);
-            //alert("Usuario creado exitosamente");
-
-            fetch(`${BASE_URL}${PATH_CUSTOMERS}/${idAEliminar}`, requestOptions).then(result => result.json()).then(result => {
-                console.log("result: ", result); //alert("Usuario eliminado")
-                //this.cargarUsuarios();
-            }, error => {
-                console.log(error);
-            });
-        })
-    }); */
+   
 
     const mostrarModalActualizar = useCallback(() => {
         dato.current.map(registro => {
@@ -285,39 +231,7 @@ const ShowProfile = (props) => {
         <UpdateUser form = {form}/>;
     });
 
-    /* const handleUpdate = useCallback((id, form) => {
-        console.log("body:", dato.current);
-        cerrarModalActualizar(); // Simple POST request with a JSON body using fetch
-
-        user.getIdToken(true).then(token => {
-            const requestOptions = {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(form)
-            }; //console.log(requestOptions);
-            //alert("Usuario creado exitosamente");
-
-            fetch(`${BASE_URL}${PATH_CUSTOMERS}/${id}`, requestOptions)
-                .then(result => result.json())
-                .then(result => {
-                    console.log("result: ", result);
-                    cargarUsuarios();
-
-                    dato.current.splice(0, dato.current.length);                    
-                    setBorrar(true);
-                    setEditar(true);
-
-                    alert("Usuario Actualizado");
-                    setNewVal(newVal + 1);
-                }, error => {
-                    console.log(error);
-                });
-        })
-    }); */
-    
+  
 console.log("i:",id);
     const { loading, error, data } = useQuery(MIPERFIL, {
         variables: { id },
@@ -350,43 +264,7 @@ console.log("i:",id);
     });
     
     
-    /* if (data) return setUsuarios(data);
-    
-    /*  const cargarUsuarios = async () => {
  
-         user.getIdToken(true).then(async (token) => {
-             const requestOptions = {
-                 method: 'GET',
-                 headers: {
-                     'Content-Type': 'application/json',
-                     Authorization: `Bearer ${token}`,
-                 },
-             };
- 
-             const response = await fetch(`${BASE_URL}${PATH_CUSTOMERS}`, requestOptions);
-             const result = await response.json();
-             console.log("R", result);
-             setUsuarios(result);
-             setUsuariosFiltrados(result);
-         })
-         fetch(`${BASE_URL}${PATH_CUSTOMERS}`)
-           .then(result => result.json())
-           .then(
-             (result) => {
-               this.setState({
-                 usuarios: result
-               });
-               console.log("result: ",result);
-               console.log("usuarios en cargarUsuarios: ",this.state.usuarios)
-              },
-             // Nota: es importante manejar errores aquí y no en 
-             // un bloque catch() para que no interceptemos errores
-             // de errores reales en los componentes.
-             (error) => {
-               console.log(error);
-             }
-           )
-     }; */
     return <div className="table-responsive"><br />
        
 
@@ -421,14 +299,7 @@ console.log("i:",id);
                         <input className="form-control"  name="correo" type="text" onChange={handleChange1} value={form.correo} />
                     </FormGroup>
 
-                    {/* <FormGroup>
-                        <label>
-                            Contraseña:
-                        </label>
-
-                        <input className="form-control"  name="contrasena" type="text" onChange={handleChange1} value={listaUsuarios[0].contrasena} />
-                    </FormGroup> */}
-
+                   
                     <FormGroup>
                         <label>
                             Nombre(s):
@@ -446,19 +317,7 @@ console.log("i:",id);
                     </FormGroup>
 
                     <FormGroup>
-                        {/*  <label>
-                            Rol:
-                        </label>
-                        <input className="form-control" name="rol" type="text" onChange={handleChange1} value={form.rol} required /> */}
-
-                        {/* <label>Rol</label>
-                        <select type="select" name="rol" style={{ width: "100%", height: "2.5rem", fontSize: "1rem", border: "2px solid #d5dbe3", borderRadius: "5px" }} onChange={handleChange1} value={form.rol} className="mb-4">
-                            <option value=""></option>
-                            <option value="admin">Administrador</option>
-                            <option value="Vendedor">Vendedor</option>
-                            <option value="bodega">Almacenista</option>
-                        </select> */}
-
+                      
 
 
                     </FormGroup>

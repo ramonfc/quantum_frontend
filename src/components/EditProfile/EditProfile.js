@@ -27,13 +27,9 @@ $activo: Boolean)
 
 const EDITARPERFIL = gql`
 
-mutation UpdateUser($updateUserId: String, $newInfo: UserUpdateInfo)
+mutation UpdateUser($newInfo: UserUpdateInfo)
 {
-    updateUser(id: $updateUserId, newInfo: { 
-        correo: $correo, 
-        contrasena: $contrasena, 
-        activo: $activo}
-        )
+    updateUser(newInfo: $newInfo)
 }
 `;
 
@@ -60,9 +56,9 @@ const EditProfile = ({ match: { params: { id } } }) => {
         console.log('form en editor:', form)
 
         editUserRecargado({
-            variables: {
-                id: id,   
+            variables: {   
                 newInfo:{
+                    identificacion: id,
                     correo: form.correo,
                     activo: form.activo,
                     contrasena: form.contrasena
@@ -165,7 +161,7 @@ const EditProfile = ({ match: { params: { id } } }) => {
                 <button className="btnUtil1" onClick={editor}>
                     Actualizar
                 </button>
-                <Link to="/user/list-projects"><button className="btnUtil1"> Cancelar </button></Link>
+                <Link to="/user/profile"><button className="btnUtil1"> Cancelar </button></Link>
 
 
 
