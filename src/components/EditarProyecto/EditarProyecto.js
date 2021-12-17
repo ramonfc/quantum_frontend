@@ -1,5 +1,5 @@
 import { React, useState, useCallback, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 
 import {
@@ -30,7 +30,8 @@ editProject(input: {identificador: $identificador,
 const EditarProyecto = ({ match: { params: { identificador } } }) => {
 
 
-    //const history =  useHistory()
+    const history =  useHistory();
+
     const [editProjectrecargado] = useMutation(EDITARPROYECTO)
 
     const editor = (e) => {
@@ -47,8 +48,8 @@ const EditarProyecto = ({ match: { params: { identificador } } }) => {
 
         console.log('form.nombre en editor:', form.nombre)
 
-        console.log('evento',e)
-        e.preventDefault();
+        console.log('evento',e);
+        
         console.log('form en editor:', form)
         editProjectrecargado({
             variables: {
@@ -59,9 +60,14 @@ const EditarProyecto = ({ match: { params: { identificador } } }) => {
                 objetivosEspecificos: form.objetivosEspecificos
             }
         }
-        )
-        /* Login.setModalRegistro(false); */
+        );
+        
+        history.push("../list-projects");
+        history.go(0);
+        
     };
+
+
     let name ;
     let presupuestirijillo;
     let objGenerales = [];

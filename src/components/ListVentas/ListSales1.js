@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import DataTable from 'react-data-table-component';
-import ListProducts1 from '../../components/ListProducts/ListProducts1.js'
+import ListProducts1 from '../ListarProyectos/ListProducts1.js'
 import {
     Container,
     Row,

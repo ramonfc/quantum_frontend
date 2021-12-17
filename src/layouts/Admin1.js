@@ -20,6 +20,7 @@ import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
 import bgImage from "assets/img/sidebar-2.jpg";
 import logo from "assets/img/logoinvertido.png";
 import EditProfile from "components/EditProfile/EditProfile.js";
+import ActivateUser from "components/ActivateUser/ActivateUser.js";
 //import carruselListar from "components/carruselListar/carruselListar.js";
 
 
@@ -55,7 +56,7 @@ export default function Admin1({ ...rest }) {
     <Switch>
       
       {routes.map((ruta, key) => {
-        console.log('key:', key);
+        //console.log('key:', key);
         
         if (ruta.layout === "/user") {
 
@@ -73,8 +74,8 @@ export default function Admin1({ ...rest }) {
       })}
        <Route exact path = '/user/list-projects/:identificador' component={EditarProyecto}></Route>
        <Route exact path = '/user/profile/:id' component={EditProfile}></Route>
-       {/* <Route exact path = '/user/proyecto/edit' component={carruselListar}></Route>
-       <Route exact path = '/user/usuario/edit' component={carruselListar}></Route>
+       <Route exact path = '/user/active-user/:id' component={ActivateUser}></Route>
+       {/* <Route exact path = '/user/usuario/edit' component={carruselListar}></Route>
        <Route exact path = '/user/inscripcion/edit' component={carruselListar}></Route>
        <Route exact path = '/user/avance/edit' component={carruselListar}></Route> */}
        

@@ -1,6 +1,6 @@
 
 import React from "react";
-import ListProducts2 from '../../components/ListProducts/ListProducts2.js'
+import ListProjects from '../../components/ListarProyectos/ListProjects.js'
 import Card from "components/Card/Card";
 import CardHeader from "components/Card/CardHeader";
 import GridItem from "components/Grid/GridItem";
@@ -54,10 +54,10 @@ export default function TableList() {
         <GridItem>
           <CardHeader color="info">
 
-            <h4>Inventario de Productos</h4>
+            <h4>Lista de Proyetos</h4>
 
           </CardHeader>
-          <ListProducts2 />
+          <ListProjects />
         </GridItem >
       </Card>
 

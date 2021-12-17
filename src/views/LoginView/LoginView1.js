@@ -1,15 +1,15 @@
 import { React, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { setRol, setName, setToken, setIdentificacion, getToken, getName, getRol, getIdentificacion} from "../../helpers/localStorage"
+import { setRol, setName, setToken, setIdentificacion, getToken, getName, getRol, getIdentificacion } from "../../helpers/localStorage"
 
 import {
     Modal,
     ModalHeader,
     ModalBody,
     ModalFooter
- } from "reactstrap";
+} from "reactstrap";
 
- import Register from "components/Register/Register";
+import Register from "components/Register/Register";
 
 import axios from 'axios';
 // estilos css Bootstrap
@@ -27,7 +27,7 @@ const Login = () => {
     const user = {
         nombre: "",
         rol: "",
-        identificacion:"",
+        identificacion: "",
         token: ""
     }
 
@@ -45,19 +45,19 @@ const Login = () => {
             const response = await axios.post('http://localhost:9093/api/login', { //authServer
                 email: email,
                 clave: password
-            })
+            });
+            
+            user.token = response.data.access_token;
+            console.log('access_token', response.data.access_token);
 
-            user.token = response.data.access_token
-            console.log('access_token', response.data.access_token)
-
-            setToken(user.token)
-            getUserType(user.token)
-
+            setToken(user.token);
+            getUserType(user.token);
 
         } catch (error) {
-            console.log(error)
-            return
+            console.log("error: ",error.response.data.access_token);
+            alert(error.response.data.access_token);
         }
+
     }
 
     const verifyToken = async (token) => {
@@ -183,16 +183,16 @@ const Login = () => {
                             <br />
 
                             <Modal isOpen={modalRegistro}>
-                  <ModalHeader>
-                     <div><h3>Registrar nuevo usuario</h3></div>
-                  </ModalHeader>
+                                <ModalHeader>
+                                    <div><h3>Registrar nuevo usuario</h3></div>
+                                </ModalHeader>
 
-                  <ModalBody>
-                     <Register />
-                  </ModalBody>
+                                <ModalBody>
+                                    <Register />
+                                </ModalBody>
 
-                  <ModalFooter>
-                     {/* <Button
+                                <ModalFooter>
+                                    {/* <Button
                   color="primary"
                   onClick={() => (this.state.form)}
                 >
@@ -204,8 +204,8 @@ const Login = () => {
                 >
                   Cancelar
                 </Button> */}
-                  </ModalFooter>
-               </Modal>
+                                </ModalFooter>
+                            </Modal>
 
                         </div>
                     </div>

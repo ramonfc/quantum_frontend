@@ -1,6 +1,7 @@
-import React, { Component, useState, useRef, useCallback, useEffect } from 'react';
+import React, { Component, useState, useRef, useCallback, useEffect, useMemo} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import DataTable from 'react-data-table-component';
+import { Link } from 'react-router-dom';
 
 import {
     ApolloClient,
@@ -29,40 +30,47 @@ import {
 console.log(BASE_URL);
 const PATH_CUSTOMERS = 'users'; */
 
-const columnas = [
+const columnas = useMemo(()=>[
     {
         name: 'Nombre',
-        selector: 'nombre',
+        selector: row=>row.nombre,
         sorteable: true,
         width: '20%'
     },
     {
         name: 'Identificacion',
-        selector: 'identificacion',
+        selector: row=>row.identificacion,
         sorteable: true
     },
     {
         name: 'Correo',
-        selector: 'correo',
+        selector: row=>row.correo,
         sorteable: true,
         width: '20%'
     },
     {
         name: 'Tipo de usuario',
-        selector: 'tipoUsuario',
+        selector: row=>row.tipoUsuario,
         sorteable: true
     },
     {
         name: 'Estado',
-        selector: 'estado',
+        selector: row=>row.estado,
         sorteable: true
     },
     {
         name: 'Activo',
-        selector: 'activo2',
+        selector: row=>row.activo2,
         sorteable: true
     },
-]
+    {
+        name: "",
+        sortable: false,
+        allowOverflow: false,
+        ignoreRowClick: true,
+        cell: (row, index, column, id) => <Button data-tag="allowRowEvents" onClick={() => { handleRowClick(row)}}>A/D</Button>
+    }
+]);
 
 const paginacionopciones = {
     rowsPerPageText: "Filas por pagina",
@@ -85,7 +93,51 @@ const USUARIOS = gql`
     }
   `;
 
+
+  const CAMBIARESTADO= gql`
+  mutation ($changeUserStateId: String, $state: userState) {
+    changeUserState(id: $changeUserStateId, state: $state)
+  }
+  `;
+
+const ACTIVARUSUARIO = gql`
+mutation ($activeUserId: String) {
+    activeUser(id: $activeUserId)
+  }
+`;
+
+
+const DESACTIVARUSUARIO = gql`
+mutation ($inactiveUserId: String) {
+    inactiveUser(id: $inactiveUserId)
+  }
+`;
+
 const ListUsers1 = props => {
+
+    const [activateUser] = useMutation(ACTIVARUSUARIO);
+    const [deactivateUser] = useMutation(DESACTIVARUSUARIO);
+
+    const handleRowClick = (row) => {
+        console.log("r", row);
+        const {identificacion, estado} = row;  
+
+            let id = identificacion;
+            
+            if(estado === "ACTIVO"){
+                deactivateUser({
+                    variables: { id }
+                }); 
+            }else{
+                activateUser({
+                    variables: { id }
+                }); 
+            } 
+            
+        
+    }
+
+
 
     /*  const auth = getAuth();
      const [user, loading, error] = useAuthState(auth);
@@ -394,9 +446,11 @@ const ListUsers1 = props => {
             fixedHeaderScrollHeight="600px"
             noDataComponent="No se encontraron usuarios" />
 
-        <button type="button" name="editar" className="btnUtil" disabled={editar} onClick={() => mostrarModalActualizar(dato.current)}>
+        {/*  <button type="button" name="editar" className="btnUtil" disabled={editar} onClick={() => mostrarModalActualizar(dato.current)}>
             Editar
-        </button>
+        </button>  */}
+
+       {/*  <Link to={`active-user/${dato.current.identificacion}`}><button type="button" name="editar" className="btnUtil" disabled={editar}>Editar</button></Link> */}
 
         <button type="button" name="borrar" className="btnUtil" disabled={borrar} onClick={() => handleDelete(dato.current)}>
             Borrar

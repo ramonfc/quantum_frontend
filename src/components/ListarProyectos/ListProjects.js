@@ -1,4 +1,4 @@
-import React, { Component, useState, useRef, useCallback, useEffect } from 'react';
+import React, { Component, useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import DataTable from 'react-data-table-component';
 import { Link } from 'react-router-dom';
@@ -26,68 +26,82 @@ import {
 } from "@apollo/client";
 
 
-// const BASE_URL = process.env.REACT_APP_BASE_URL;
-// //const BASE_URL = "http://localhost:3000/";
-// console.log(BASE_URL);
-// const PATH_PRODUCTS = 'products';
 
-const columnas = [
-    {
-        name: 'ID',
-        selector: 'identificador',
-        sorteable: true
-    },
-    {
-        name: 'Nombre del Proyecto',
-        selector: 'nombre',
-        sorteable: true
-    },
-    {
-        name: 'Presupuesto',
-        selector: 'presupuesto',
-        sorteable: true
-    },
-    {
-        name: 'Estado',
-        selector: 'estado',
-        sorteable: true
-    },
-    {
-        name: "Action",
-        cell: (row: { _id: any }) => (
-            <>
-                <span onClick={() => handleButtonClick()} className='btn btn-primary'>A/D</span>{'     '}
-                
-            </>
-        ),
+const CHANGESTATE = gql`  
+mutation ($projectId: String, $newState: projectState) {
+changeProjectState(projectId: $projectId, newState: $newState)
+}
+`;
 
-        ignoreRowClick: true,
-        allowOverflow: true,
-        button: true,
+
+const ListProjects = props => {
+    const [changeProjectState] = useMutation(CHANGESTATE);
+
+
+    const handleRowClick = (row) => {
+        console.log("r", row);
+        const {identificador, estado} = row;  
+
+            let projectId = identificador;
+            let newState= (estado === "ACTIVO") ? "INACTIVO":"ACTIVO";     
+    
+             
+            changeProjectState({
+                variables: { projectId, newState }
+            });                     
     }
 
-]
+  
 
-const handleButtonClick = ()=>{
-    // if(form.estado == 'ACTIVO')
-    //     form.estado = 'DESAC'
-    // else{
-    //     form.estado = 'ACTIVO'
-    // }
-    alert('ayudaaaa')
-}
-
-
-const paginacionopciones = {
-    rowsPerPageText: "Filas por pagina",
-    rangeSeparatorText: 'de',
-    selectAllRowsItem: true,
-    selectAllRowsItemText: 'Todos'
-}
+  
 
 
 
-const PROYECTOS = gql`
+
+    const columnas = useMemo(()=>[
+        {
+            name: 'ID',
+            selector: row => row.identificador,
+            sorteable: true
+        },
+        {
+            name: 'Nombre del Proyecto',
+            selector: row => row.nombre,
+            sorteable: true
+        },
+        {
+            name: 'Presupuesto',
+            selector: row => row.presupuesto,
+            sorteable: true
+        },
+        {
+            name: 'Estado',
+            selector: row => row.estado,
+            sorteable: true
+        },
+        {
+            name: "",
+            sortable: false,
+            allowOverflow: false,
+            ignoreRowClick: true,
+            cell: (row, index, column, id) => <Button data-tag="allowRowEvents" onClick={() => { handleRowClick(row) }}>A/D</Button>
+        }
+
+    ]);
+
+
+
+
+    const paginacionopciones = {
+        rowsPerPageText: "Filas por pagina",
+        rangeSeparatorText: 'de',
+        selectAllRowsItem: true,
+        selectAllRowsItemText: 'Todos'
+    }
+
+
+
+    const PROYECTOS = gql`
     query Query {
         proyectos {
             identificador
@@ -108,8 +122,6 @@ const PROYECTOS = gql`
   `;
 
 
-
-const ListProducts1 = props => {
 
     const { loading, error, data } = useQuery(PROYECTOS)
     console.log("Data:", data);
@@ -150,6 +162,20 @@ const ListProducts1 = props => {
     const id = useRef();
     const selectableRowsComponent = useRef();
     const selectedRows = useRef();
+
+
+    //Para el botón A/D:
+    const handleButtonClick = (row) => {
+        // if(form.estado == 'ACTIVO')
+        //     form.estado = 'DESAC'
+        // else{
+        //     form.estado = 'ACTIVO'
+        // }
+
+        console.log("colum:", row)
+        //console.log('dato.current en A/D', dato.current[0].identificador)
+    }
+
 
     const onChange = useCallback((event) => {
         console.log('event.target.value ', event.target.value);
@@ -385,7 +411,9 @@ const ListProducts1 = props => {
             selectableRowsComponent={selectableRowsComponent.current}
             onSelectedRowsChange={handleChange}
             fixedHeaderScrollHeight="600px"
-            noDataComponent="No se encontraron productos" />
+            noDataComponent="No se encontraron productos"
+
+        />
 
         <button type="button" name="editar" className="btnUtil" disabled={editar} onClick={() => mostrarModalActualizar(dato.current)}>
             Editar
@@ -471,4 +499,4 @@ const ListProducts1 = props => {
     </div>;
 };
 
-export default ListProducts1;
+export default ListProjects;
