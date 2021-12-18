@@ -48,7 +48,8 @@ const ListProjects = props => {
              
             changeProjectState({
                 variables: { projectId, newState }
-            });                     
+            });    
+            history.go(0);                 
     }
 
   
@@ -80,7 +81,12 @@ const ListProjects = props => {
             sorteable: true
         },
         {
-            name: "",
+            name: 'Fase',
+            selector: row => row.fase,
+            sorteable: true
+        },
+        {
+            name: "Activar/Desactivar",
             sortable: false,
             allowOverflow: false,
             ignoreRowClick: true,
@@ -109,6 +115,7 @@ const ListProjects = props => {
             integrantes
             presupuesto
             estado
+            fase
             avances {
                 fecha
                 descripcion

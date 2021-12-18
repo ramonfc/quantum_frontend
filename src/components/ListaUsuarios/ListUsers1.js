@@ -1,7 +1,7 @@
-import React, { Component, useState, useRef, useCallback, useEffect, useMemo} from 'react';
+import React, { Component, useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import DataTable from 'react-data-table-component';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import {
     ApolloClient,
@@ -30,47 +30,7 @@ import {
 console.log(BASE_URL);
 const PATH_CUSTOMERS = 'users'; */
 
-const columnas = useMemo(()=>[
-    {
-        name: 'Nombre',
-        selector: row=>row.nombre,
-        sorteable: true,
-        width: '20%'
-    },
-    {
-        name: 'Identificacion',
-        selector: row=>row.identificacion,
-        sorteable: true
-    },
-    {
-        name: 'Correo',
-        selector: row=>row.correo,
-        sorteable: true,
-        width: '20%'
-    },
-    {
-        name: 'Tipo de usuario',
-        selector: row=>row.tipoUsuario,
-        sorteable: true
-    },
-    {
-        name: 'Estado',
-        selector: row=>row.estado,
-        sorteable: true
-    },
-    {
-        name: 'Activo',
-        selector: row=>row.activo2,
-        sorteable: true
-    },
-    {
-        name: "",
-        sortable: false,
-        allowOverflow: false,
-        ignoreRowClick: true,
-        cell: (row, index, column, id) => <Button data-tag="allowRowEvents" onClick={() => { handleRowClick(row)}}>A/D</Button>
-    }
-]);
+
 
 const paginacionopciones = {
     rowsPerPageText: "Filas por pagina",
@@ -94,11 +54,12 @@ const USUARIOS = gql`
   `;
 
 
-  const CAMBIARESTADO= gql`
+const CAMBIARESTADO = gql`
   mutation ($changeUserStateId: String, $state: userState) {
     changeUserState(id: $changeUserStateId, state: $state)
   }
   `;
+ 
 
 const ACTIVARUSUARIO = gql`
 mutation ($activeUserId: String) {
@@ -113,28 +74,75 @@ mutation ($inactiveUserId: String) {
   }
 `;
 
+
 const ListUsers1 = props => {
 
+    const history = useHistory();
+
+    const columnas = useMemo(() => [
+        {
+            name: 'Nombre',
+            selector: row => row.nombre,
+            sorteable: true,
+            width: '20%'
+        },
+        {
+            name: 'Identificacion',
+            selector: row => row.identificacion,
+            sorteable: true
+        },
+        {
+            name: 'Correo',
+            selector: row => row.correo,
+            sorteable: true,
+            width: '20%'
+        },
+        {
+            name: 'Tipo de usuario',
+            selector: row => row.tipoUsuario,
+            sorteable: true
+        },
+        {
+            name: 'Estado',
+            selector: row => row.estado,
+            sorteable: true
+        },
+        {
+            name: 'Activo',
+            selector: row => row.activo,
+            sorteable: true
+        },
+        {
+            name: "",
+            sortable: false,
+            allowOverflow: false,
+            ignoreRowClick: true,
+            cell: (row, index, column, id) => <Button data-tag="allowRowEvents" onClick={() => { handleRowClick(row) }}>A/D</Button>
+        }
+    ]);
+
     const [activateUser] = useMutation(ACTIVARUSUARIO);
-    const [deactivateUser] = useMutation(DESACTIVARUSUARIO);
+    const [inactiveUser] = useMutation(DESACTIVARUSUARIO);
+    const [changeUserState] = useMutation(CAMBIARESTADO);
+    
 
     const handleRowClick = (row) => {
         console.log("r", row);
-        const {identificacion, estado} = row;  
+        const { identificacion, activo } = row;
 
-            let id = identificacion;
-            
-            if(estado === "ACTIVO"){
-                deactivateUser({
-                    variables: { id }
-                }); 
-            }else{
-                activateUser({
-                    variables: { id }
-                }); 
-            } 
-            
-        
+        let id = identificacion;
+        console.log("ID front: ", id, activo);
+
+        if (activo === "ACTIVO") {
+            inactiveUser({
+                variables: { inactiveUserId: id }
+            });
+        } else {
+            activateUser({
+                variables: { activeUserId: id }
+            });
+        }
+        history.go(0);
     }
 
 
@@ -145,6 +153,8 @@ const ListUsers1 = props => {
     const [newVal, setNewVal] = React.useState(0);
     const [isLoaded, setIsLoaded] = React.useState(false);
 
+
+    const [modalAprobar, setModalAprobar] = useState({mostrar:false, datoAprobar:""});
     const [busqueda, setBusqueda] = useState();
     const [usuariosFiltrados, setUsuariosFiltrados] = useState([]);
     const [usuarios, setUsuarios] = useState([]);
@@ -253,7 +263,7 @@ const ListUsers1 = props => {
 
         if (rows.length > 1) {
             setEditar(true);
-            setBorrar(false);
+            setBorrar(true);
         } //this.setState.disabled;
 
 
@@ -270,26 +280,17 @@ const ListUsers1 = props => {
     });
 
 
-    const handleDelete = useCallback(() => {
+    const handleAprove = (datoc) => {
         console.log(dato);
         console.log(dato.length);
-        console.log("dc", dato.current);
-
-        if (window.confirm(`Está usted seguro de borrar:\r ${dato.current.map(r => r.correo)}?`)) {
-            let msg = [];
-            let arregloUsuarios = dato.current;
-            console.log("AP", arregloUsuarios);
-            arregloUsuarios.map(registro => {
-                msg.push(registro.correo);
-                eliminarUsuario(registro._id);
-            });
-            /* cargarUsuarios(); */
-            alert("Se eliminó a: " + msg.join(","));
-            dato.current.splice(0, dato.current.length);
-            setBorrar(true);
-            setEditar(true);
-        }
-    });
+        console.log("dc", datoc);
+       
+        setModalAprobar({mostrar:true, datoAprobar:datoc});
+        //dato.current.splice(0, dato.current.length);
+        setBorrar(true);
+        setEditar(true);
+        //}
+    };
 
 
     /* const eliminarUsuario = useCallback((idAEliminar) => {
@@ -325,6 +326,12 @@ const ListUsers1 = props => {
     const cerrarModalActualizar = useCallback(() => {
         setModalActualizar(false);
     });
+
+    const cerrarModalAprobar = useCallback(() => {
+        setModalAprobar({mostrar:false, datoAprobar:""});
+        history.go(0);
+    });
+
 
     /* const handleUpdate = useCallback((id, form) => {
         console.log("body:", dato.current);
@@ -362,65 +369,57 @@ const ListUsers1 = props => {
     const { loading, error, data } = useQuery(USUARIOS)
     console.log("Data:", data);
 
-    if (loading) return null;
+    //if (loading) return null;
     if (error) return `Error! ${error}`;
     console.log("Data1:", data);
-    const usuariosTabla = data.users;
-    console.table("UT", usuariosTabla[0]);
+    let usuariosTabla = [];
+    try {
+        usuariosTabla = data.users;
+    } catch {
+        console.log("catch")
+    }
 
-    const listaUsuarios = [];
+    console.table("UT", usuariosTabla);
+
+    let listaUsuarios = [];
 
 
     usuariosTabla.map(usuario => {
-        const usuario1 = Object.create(usuario);
-        listaUsuarios.push(usuario1);
+
+        let obj = {
+            correo: usuario.correo,
+            identificacion: usuario.identificacion,
+            nombre: usuario.nombre,
+            tipoUsuario: usuario.tipoUsuario,
+            estado: usuario.estado,
+            activo: usuario.activo,
+            activo2: ""
+        }
+        /*  const usuario1 = Object.create(obj);
+         console.log("usuario1: ",usuario) */
+        listaUsuarios.push(obj);
     });
 
 
     listaUsuarios.map(usuario => {
-        if(usuario.activo === true){
+        if (usuario.activo === true) {
             usuario.activo2 = "Si";
-        }else usuario.activo2 = "No";
+        } else usuario.activo2 = "No";
 
     });
-    
-    /* if (data) return setUsuarios(data);
-    
-    /*  const cargarUsuarios = async () => {
- 
-         user.getIdToken(true).then(async (token) => {
-             const requestOptions = {
-                 method: 'GET',
-                 headers: {
-                     'Content-Type': 'application/json',
-                     Authorization: `Bearer ${token}`,
-                 },
-             };
- 
-             const response = await fetch(`${BASE_URL}${PATH_CUSTOMERS}`, requestOptions);
-             const result = await response.json();
-             console.log("R", result);
-             setUsuarios(result);
-             setUsuariosFiltrados(result);
-         })
-         fetch(`${BASE_URL}${PATH_CUSTOMERS}`)
-           .then(result => result.json())
-           .then(
-             (result) => {
-               this.setState({
-                 usuarios: result
-               });
-               console.log("result: ",result);
-               console.log("usuarios en cargarUsuarios: ",this.state.usuarios)
-              },
-             // Nota: es importante manejar errores aquí y no en 
-             // un bloque catch() para que no interceptemos errores
-             // de errores reales en los componentes.
-             (error) => {
-               console.log(error);
-             }
-           )
-     }; */
+    console.log("LISTA USUARIOS: ", listaUsuarios);
+   
+      const cambiarEstado = (newState, dato) => {
+          const estado = newState;
+          const id = dato[0].identificacion;
+          console.log("New State: ", estado);
+         console.log("ROWS APROBAR: ", dato) 
+        
+        changeUserState({variables:{changeUserStateId: id, state:estado}});
+        cerrarModalAprobar();
+      }; 
+
+
     return <div className="table-responsive"><br />
         <div className="barrabusqueda">
             <input
@@ -436,7 +435,7 @@ const ListUsers1 = props => {
 
         <DataTable
             columns={columnas}
-            data={listaUsuarios}
+            data={usuariosTabla}
             pagination paginationComponentOptions={paginacionopciones}
             fixedHeader
             selectableRows
@@ -446,14 +445,14 @@ const ListUsers1 = props => {
             fixedHeaderScrollHeight="600px"
             noDataComponent="No se encontraron usuarios" />
 
-        {/*  <button type="button" name="editar" className="btnUtil" disabled={editar} onClick={() => mostrarModalActualizar(dato.current)}>
+       {/*  <button type="button" name="editar" className="btnUtil" disabled={editar} onClick={() => mostrarModalActualizar(dato.current)}>
             Editar
-        </button>  */}
+        </button> */}
 
-       {/*  <Link to={`active-user/${dato.current.identificacion}`}><button type="button" name="editar" className="btnUtil" disabled={editar}>Editar</button></Link> */}
+        {/*  <Link to={`active-user/${dato.current.identificacion}`}><button type="button" name="editar" className="btnUtil" disabled={editar}>Editar</button></Link> */}
 
-        <button type="button" name="borrar" className="btnUtil" disabled={borrar} onClick={() => handleDelete(dato.current)}>
-            Borrar
+        <button type="button" name="borrar" className="btnUtil" disabled={borrar} onClick={() => handleAprove(dato.current)}>
+            Cambiar Estado
         </button>
 
         <div>
@@ -555,6 +554,75 @@ const ListUsers1 = props => {
                 </Row>
             </Modal>
 
+
+
+
+            <div>
+
+                <Modal isOpen={modalAprobar.mostrar}>
+                    <ModalHeader>
+                        <div><h3>Aprobar Usuario{form.correo}</h3></div>
+                    </ModalHeader>
+
+                    <ModalBody>
+                        <FormGroup>
+                            <Row>
+                                <Col>
+
+                                    <label>
+                                        Aprobar Usuario:
+                                    </label>
+                                </Col>
+
+                                <Col>
+
+                                    <input type="radio" value="AUTORIZADO" onClick={() => { cambiarEstado("AUTORIZADO", modalAprobar.datoAprobar) }} />
+                                </Col>
+                            </Row>
+
+
+
+
+                        </FormGroup>
+
+                        <FormGroup>
+
+                            <Row>
+                                <Col>
+                                    <label>
+                                        Rechazar Usuario:
+                                    </label>
+                                </Col>
+
+                                <Col>
+                                    <input type="radio" value="NO_AUTORIZADO" onClick={()=>{cambiarEstado("NO_AUTORIZADO", modalAprobar.datoAprobar)}} />
+                                </Col>
+
+                            </Row>
+
+
+
+                        </FormGroup>
+
+
+                    </ModalBody>
+
+                    <Row>
+                        <Col>
+
+                            <ModalFooter>
+                                {/* <Button className="btnUtil1" onClick={() => handleUpdate(id.current, form)}>
+                                Actualizar
+                            </Button> */}
+                                <Button className="btnUtil1" onClick={() => cerrarModalAprobar()}>
+                                    Cerrar
+                                </Button>
+                            </ModalFooter>
+
+                        </Col>
+                    </Row>
+                </Modal>
+            </div>
         </div>
 
     </div>;
