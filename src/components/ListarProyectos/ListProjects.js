@@ -86,12 +86,28 @@ const ListProjects = props => {
             sorteable: true
         },
         {
+            name: 'Integrantes',
+            selector: row => row.integrantes.length,
+            sorteable: true
+        },
+        {
+            name: 'Fecha Inicio',
+            selector: row => row.fechaInicio,
+            sorteable: true
+        },
+        {
+            name: 'Fecha Fin',
+            selector: row => row.fechaFin,
+            sorteable: true
+        },
+        {
             name: "Activar/Desactivar",
             sortable: false,
             allowOverflow: false,
             ignoreRowClick: true,
             cell: (row, index, column, id) => <Button data-tag="allowRowEvents" onClick={() => { handleRowClick(row) }}>A/D</Button>
-        }
+        },
+       
 
     ]);
 
@@ -112,7 +128,9 @@ const ListProjects = props => {
         proyectos {
             identificador
             nombre
-            integrantes
+            integrantes{
+                nombre            
+            }
             presupuesto
             estado
             fase
@@ -123,12 +141,13 @@ const ListProjects = props => {
             lider {
                 nombre
             }
+            fechaInicio
+            fechaFin
         }
     }
   
   `;
-
-
+  
 
     const { loading, error, data } = useQuery(PROYECTOS)
     console.log("Data:", data);

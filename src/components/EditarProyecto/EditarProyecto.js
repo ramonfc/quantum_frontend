@@ -17,13 +17,16 @@ mutation editProject($identificador: String,
 $nombre: String, 
 $objetivosGenerales: [String], 
 $objetivosEspecificos: [String],   
-$presupuesto: Float) 
+$presupuesto: Float,
+$fase: projectPhase) 
 {
 editProject(input: {identificador: $identificador, 
   nombre: $nombre, 
   objetivosGenerales: $objetivosGenerales, 
   objetivosEspecificos: $objetivosEspecificos,   
-  presupuesto: $presupuesto})
+  presupuesto: $presupuesto,
+  fase: $fase
+    })
 }
 `;
 
@@ -46,9 +49,11 @@ const EditarProyecto = ({ match: { params: { identificador } } }) => {
         console.log('capturalooo: ',objEspecificos.value)
         if(objEspecificos.value)
             form.objetivosEspecificos = (objEspecificos.value).split(',')
+        if(fasePjt.value)
+            form.fase = fasePjt.value
 
         console.log('form.nombre en editor:', form.nombre)
-
+        console.log('form.fase en editor:', form.fase)
         console.log('evento',e);
         
         console.log('form en editor:', form)
@@ -58,7 +63,8 @@ const EditarProyecto = ({ match: { params: { identificador } } }) => {
                 identificador: form.identificador,
                 presupuesto: form.presupuesto,
                 objetivosGenerales: form.objetivosGenerales,
-                objetivosEspecificos: form.objetivosEspecificos
+                objetivosEspecificos: form.objetivosEspecificos,
+                fase: form.fase
             }
         }
         );
@@ -87,12 +93,15 @@ const EditarProyecto = ({ match: { params: { identificador } } }) => {
           identificador
           objetivosGenerales
           objetivosEspecificos
-          integrantes
+          integrantes{
+              nombre
+          }
           fase
         }
       }
   `;
 
+  let nombres = [];
 
     const { loading, error, data } = useQuery(PROYECTO,
         {
@@ -106,6 +115,8 @@ const EditarProyecto = ({ match: { params: { identificador } } }) => {
     try {
         form = { ...data.projectByIdentifier }
         console.log('form:', form)
+        nombres = form.integrantes.map(r =>r.nombre) ;
+        console.log("nombres: ", nombres.join());
     } catch {
         console.log('catch')
     }
@@ -135,7 +146,7 @@ const EditarProyecto = ({ match: { params: { identificador } } }) => {
                 <label>
                     Integrantes:
                 </label>
-                <input className="form-control" name="integrantes" type="text" readOnly ref={u => integrantes = u} placeholder={form.integrantes} />
+                <input className="form-control" name="integrantes" type="text" readOnly ref={u => integrantes = u} placeholder={nombres.join()} />
 
              
 
