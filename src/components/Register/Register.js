@@ -40,20 +40,23 @@ addUser(input: {correo: $correo,
 `;
 
 
-function Register() {
+function Register(props) {
 
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [identificacion, setIdentificacion] = useState("");
   const [rol, setRol] = useState("");
   /* const [user, loading, error] = useAuthState(auth); */
+  
   const history = useHistory();
 
   const [createUserMutation] = useMutation(CREARUSUARIO)
 
   const register = () => {
 
+  
     if (!name) {
       alert("Please enter name");
       
@@ -68,10 +71,15 @@ function Register() {
           correo: email
       }
     }
-    )
-    /* Login.setModalRegistro(false); */
+    )  
+    props.e();
+
   };
 
+
+  const cancelarRegistro =()=>{
+    props.e();
+  }
 
   /* useEffect(() => {
     if (loading) return;
@@ -152,7 +160,7 @@ function Register() {
 
         <Button
           color="danger"
-        /* onClick={signInWithGoogle} */
+        onClick={cancelarRegistro} 
         >
           Cancelar registro
         </Button>

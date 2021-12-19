@@ -18,8 +18,12 @@ import './LoginView.css'
 import logo from '../../imgs/user-login.png'
 
 
+
+
 const Login = () => {
 
+
+    const [modalRegistro, setModalRegistro] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [clickButton, setClickButton] = useState(false);
@@ -31,14 +35,17 @@ const Login = () => {
         token: ""
     }
 
-    const [modalRegistro, setModalRegistro] = useState();
-
+  
     const goToRegister = () => {
 
         setModalRegistro(true);
 
     }
 
+    const cerrarModalRegistro = ()=>{
+        setModalRegistro(false);        
+    }
+    
 
     const getAccessToken = async () => {
         try {
@@ -49,12 +56,12 @@ const Login = () => {
             
             user.token = response.data.access_token;
             console.log('access_token', response.data.access_token);
-
+           
             setToken(user.token);
             getUserType(user.token);
 
         } catch (error) {
-            console.log("error: ",error.response.data.access_token);
+            console.log("error: ",error.response);
             alert(error.response.data.access_token);
         }
 
@@ -107,7 +114,7 @@ const Login = () => {
     }
 
 
-    useEffect(() => {
+   /*  useEffect(() => {
 
         user.token = getToken()
         console.log('user.token', user.token)
@@ -121,9 +128,22 @@ const Login = () => {
 
         }
 
-    }, [clickButton])
+    }, [clickButton]) */
 
 
+    const ingreso = ()=>{
+        user.token = getToken()
+        console.log('user.token', user.token)
+        if (user.token === undefined || user.token == null) {
+            getAccessToken()
+
+        } else {
+            // validar token
+            verifyToken(user.token)
+
+
+        }
+    }
 
     return (
 
@@ -173,7 +193,8 @@ const Login = () => {
                         <div className="col-md-12 login-form-row">
                             <br />
                             <button onClick={(e) => {
-                                setClickButton(!clickButton)
+                               // setClickButton(!clickButton)
+                               ingreso()
 
                             }} className="btn btn-info" type="submit">Iniciar Sesión</button>
 
@@ -188,7 +209,7 @@ const Login = () => {
                                 </ModalHeader>
 
                                 <ModalBody>
-                                    <Register />
+                                    <Register  e = {cerrarModalRegistro}/>
                                 </ModalBody>
 
                                 <ModalFooter>
