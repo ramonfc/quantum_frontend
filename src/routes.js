@@ -7,17 +7,9 @@
 */
 // @material-ui/icons
 import Dashboard from "@material-ui/icons/Dashboard";
-//import Person from "@material-ui/icons/Person";
-//import LibraryBooks from "@material-ui/icons/LibraryBooks";
-//import BubbleChart from "@material-ui/icons/BubbleChart";
-//import LocationOn from "@material-ui/icons/LocationOn";
-//import Notifications from "@material-ui/icons/Notifications";
-//import Unarchive from "@material-ui/icons/Unarchive";
-//import Language from "@material-ui/icons/Language";
 import Add from "@material-ui/icons/Add";
-import Create from "@material-ui/icons/Create";
-//import List from "@material-ui/icons/List";
-import { PersonAdd, ListAlt, People, ExitToApp, AccountCircle } from "@material-ui/icons";
+// You can find Icons Names in https://mui.com/components/material-icons/
+import { AssignmentTurnedIn, ListAlt, People, ExitToApp, AccountCircle, NextWeek,School, CloudUpload} from "@material-ui/icons";
 
 // core components/views for Admin layout
 import DashboardPage from "views/Dashboard/Dashboard.js";
@@ -40,15 +32,15 @@ const dashboardRoutes = [
     icon: Dashboard,
     component: DashboardPage,
     layout: "/user",
-    permisos: 'admin, Vendedor, bodega, null'
+    permisos: 'ADMINISTRADOR, ESTUDIANTE, LIDER'
   },
   {
-    path: "/add-products",
-    name: "Agregar Productos",
+    path: "/create-project",
+    name: "Crear Proyecto",
     icon: Add,
     component: UserProfile,
     layout: "/user",
-    permisos: 'admin, bodega'
+    permisos: 'LIDER'
   },
   {
     path: "/list-projects",
@@ -56,31 +48,47 @@ const dashboardRoutes = [
     icon: ListAlt,
     component: TableList,
     layout: "/user",
-    permisos: 'admin, Vendedor, bodega'
+    permisos: 'ADMINISTRADOR, ESTUDIANTE, LIDER'
   },
   {
-    path: "/create-sale",
-    name: "Crear Venta",
-    icon: Create,
+    path: "/my-projects",
+    name: "Mis Proyectos",
+    icon: AssignmentTurnedIn,
     component: Typography,
     layout: "/user",
-    permisos: 'admin, Vendedor'
+    permisos: 'ESTUDIANTE, LIDER'
   },
   {
-    path: "/list-sales",
-    name: "Listar Ventas",
+    path: "/inscriptions",
+    name: "Listar Inscripciones",
     icon: ListAlt,
     component: Icons,
     layout: "/user",
-    permisos: 'admin, Vendedor'
+    permisos: 'LIDER'
   },
   {
-    path: "/manage-users",
-    name: "Crear Usuario",
-    icon: PersonAdd,
+    path: "/my-inscriptions",
+    name: "Mis Inscripciones",
+    icon: School,
     component: Maps,
     layout: "/user",
-    permisos: 'admin'
+    permisos: 'ESTUDIANTE'
+  },
+  {
+    path: "/advances",
+    name: "Listar Avances",
+    icon: NextWeek,
+    component: Icons,
+    layout: "/user",
+    permisos: 'LIDER'
+  },
+  {
+    path: "/my-advances",
+    name: "Mis Avances",
+    icon: CloudUpload,
+    component: Maps,
+    layout: "/user",
+    permisos: 'ESTUDIANTE'
   },
   {
     path: "/list-users",
@@ -88,7 +96,7 @@ const dashboardRoutes = [
     icon: People,
     component: NotificationsPage,
     layout: "/user",
-    permisos: 'admin'
+    permisos: 'ADMINISTRADOR, LIDER'
   },
   {
     path: "/logout",
@@ -96,7 +104,7 @@ const dashboardRoutes = [
     icon: ExitToApp,
     component: CerrarSesion,
     layout: "/user",
-    permisos: 'admin, Vendedor, bodega'
+    permisos: 'ADMINSTRADOR, LIDER, ESTUDIANTE'
   },
   {
     path: "/profile",
@@ -104,7 +112,7 @@ const dashboardRoutes = [
     icon: AccountCircle,
     component: UpgradeToPro,
     layout: "/user",
-    permisos: 'admin, Vendedor, bodega'
+    permisos: 'ADMINSTRADOR, LIDER, ESTUDIANTE'
   },
 ];
 
