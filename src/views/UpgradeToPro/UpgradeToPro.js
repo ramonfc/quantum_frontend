@@ -96,23 +96,6 @@ const obtenerId = ()=>{
 
 export default function UpgradeToPro() {
 
-  const switchRoutes = (
-    <Switch>
-
-            <Route
-              exact path='user/profile/edit'
-              component={Carrusel}
-            />
-         
-       {/* <Route exact path = '/user/profile/edit' component={Carrusel}></Route> */}
-       
-    
-    </Switch>
-  );
-
-
-
-
   const classes = useStyles();
   return (
     <GridContainer justify="center">

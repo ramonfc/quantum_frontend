@@ -58,7 +58,7 @@ const columnas = [
     },
     {
         name: 'Activo',
-        selector: 'activo2',
+        selector: d => d.activo? 'Si':'No',
         sorteable: true
     },
 ]
@@ -107,12 +107,7 @@ const ShowProfile = (props) => {
     });
     const [modalActualizar, setModalActualizar] = useState();
 
-    /* React.useEffect(() => {
-        if (loading) return;
-        if (!user) return history.replace("/");
-    }, [user, loading]); */
-
-   
+ 
 
     useEffect(() => {
         console.log("Cargando usuarios")
@@ -244,26 +239,6 @@ console.log("i:",id);
     const usuariosTabla = [data.findUserByPersonalId];
     console.table("UT", usuariosTabla);
 
-    const listaUsuarios = [];
-
-
-    usuariosTabla.map(usuario => {
-        const usuario1 = Object.create(usuario);
-        listaUsuarios.push(usuario1);
-    });
-
-
-    listaUsuarios.map(usuario => {
-        if(usuario.activo === true){
-            usuario.activo2 = "Si";
-            usuario.option = "No";
-        }else {usuario.activo2 = "No";
-                usuario.option="Si";
-    }
-
-    });
-    
-    
  
     return <div className="table-responsive"><br />
        
@@ -271,7 +246,7 @@ console.log("i:",id);
        
         {<DataTable
             columns={columnas}
-            data={listaUsuarios}
+            data={usuariosTabla}
             fixedHeader
             selectableRows
             selectableRowsHighlight
@@ -280,96 +255,9 @@ console.log("i:",id);
             fixedHeaderScrollHeight="600px"
             noDataComponent="No se encontraron usuarios" />}
 
-<Link to={`profile/${listaUsuarios[0].identificacion}`}><button type="button" name="editar" className="btnUtil" disabled={editar}>Editar</button></Link>
+<Link to={`profile/${usuariosTabla[0].identificacion}`}><button type="button" name="editar" className="btnUtil" disabled={editar}>Editar</button></Link>
 
         
-        <div>
-
-            <Modal isOpen={modalActualizar}>
-                <ModalHeader>
-                    <div><h3>Actualizar usuario {listaUsuarios[0].correo}</h3></div>
-                </ModalHeader>
-
-                <ModalBody>
-                    <FormGroup>
-                        <label>
-                            Correo:
-                        </label>
-
-                        <input className="form-control"  name="correo" type="text" onChange={handleChange1} value={form.correo} />
-                    </FormGroup>
-
-                   
-                    <FormGroup>
-                        <label>
-                            Nombre(s):
-                        </label>
-
-                        <input className="form-control" name="nombre" type="text" onChange={handleChange1} value={form.nombre} />
-                    </FormGroup>
-
-                    <FormGroup>
-                        <label>
-                            Identificacion:
-                        </label>
-
-                        <input className="form-control" name="identificacion" readOnly type="text" value={listaUsuarios[0].identificacion} />
-                    </FormGroup>
-
-                    <FormGroup>
-                      
-
-
-                    </FormGroup>
-
-                    <FormGroup>
-                        <label>
-                            Estado:
-                        </label>
-                        <input className="form-control" name="estado" readOnly type="text"  value={listaUsuarios[0].estado} />
-                    </FormGroup>
-
-                    <FormGroup>
-                        <label>
-                            Tipo de usuario:
-                        </label>
-                        <input className="form-control" readOnly name="tipoUsuario" type="text" value={listaUsuarios[0].tipoUsuario} />
-                    </FormGroup>
-
-                    <FormGroup>
-                        {/*  <label>
-                            Estado:
-                        </label>
-                        <input className="form-control" name="status" type="text" onChange={handleChange1} value={form.status} /> */}
-
-                        <label>Activo</label>
-                        <select type="select" name="status" style={{ width: "100%", height: "2.5rem", fontSize: "1rem", border: "2px solid #d5dbe3", borderRadius: "5px" }} onChange={handleChange1} value={form.activo} className="mb-4">
-                            <option selected value={listaUsuarios[0].activo}>{listaUsuarios[0].activo2}</option>
-                            <option value={!listaUsuarios[0].activo}>{listaUsuarios[0].option}</option>
-        
-                        </select>
-
-                    </FormGroup>
-
-                </ModalBody>
-
-                <Row>
-                    <Col>
-
-                        <ModalFooter>
-                            <Button className="btnUtil1" onClick={() => handleUpdate(x.current, form)}>
-                                Actualizar
-                            </Button>
-                            <Button className="btnUtil1" onClick={() => cerrarModalActualizar()}>
-                                Cancelar
-                            </Button>
-                        </ModalFooter>
-
-                    </Col>
-                </Row>
-            </Modal>
-
-        </div>
 
     </div>;
 };
