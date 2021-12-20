@@ -155,8 +155,9 @@ const EditarProyecto = ({ match: { params: { identificador } } }) => {
                 <select type="select" name="status" style={{ width: "100%", height: "2.5rem", fontSize: "1rem", border: "2px solid #d5dbe3", borderRadius: "5px" }} ref={u => fasePjt = u} className="mb-4">
                     <option selected value={form.fase}>{form.fase}</option>
 
-                    <option  value="EN_DESARROLLO" disabled={(form.fase==="INICIADO")?false:true}>En desarrollo</option>
-                    <option value="TERMINADO" disabled={(form.fase==="EN_DESARROLLO")?false:true}>Terminado</option>
+                    <option  value="EN_DESARROLLO" disabled={(((form.fase==="INICIADO")?false:true)||((form.estado ==="INACTIVO")?true:false))?true:false}>En desarrollo</option>
+                    
+                    <option value="TERMINADO" disabled={(((form.fase==="EN_DESARROLLO")?false:true)||((form.estado==="INACTIVO")?true:false))?true:false}>Terminado</option>
                    {/*  <option value={form.fase==="INICIADO"?"EN_DESARROLLO":""}>{form.fase==="INICIADO"?"EN_DESARROLLO":""}</option>
                     <option value={form.fase==="EN_DESARROLLO"?"TERMINADO":""}>{form.fase==="EN_DESARROLLO"?"TERMINADO":""}</option> */}
                 </select>
