@@ -114,21 +114,20 @@ const Login = () => {
     }
 
 
-   /*  useEffect(() => {
+    useEffect(() => {
 
         user.token = getToken()
-        console.log('user.token', user.token)
+        console.log('useEffect: token', user.token)
         if (user.token === undefined || user.token == null) {
-            getAccessToken()
+            console.log('no hay token, no hacer nada useEffect')
 
         } else {
-            // validar token
+            
             verifyToken(user.token)
-
 
         }
 
-    }, [clickButton]) */
+    }, []) 
 
 
     const ingreso = ()=>{
