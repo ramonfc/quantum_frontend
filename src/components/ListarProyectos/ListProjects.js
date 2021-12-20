@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom';
 // import { useAuthState } from "react-firebase-hooks/auth";
 // import { useHistory } from "react-router";
 // import { getAuth } from "firebase/auth";
+import { getRol, getIdentificacion} from 'helpers/localStorage';
 
 import {
     Button,
@@ -26,6 +27,7 @@ import {
 } from "@apollo/client";
 
 
+//INICIO: GQL MUTACIONESSS
 
 const CHANGESTATE = gql`  
 mutation ($projectId: String, $newState: projectState) {
@@ -33,33 +35,44 @@ changeProjectState(projectId: $projectId, newState: $newState)
 }
 `;
 
+const INSCRIBIRME = gql`  
+mutation AddInscription($studentId: String, $projectId: String) {
+    addInscription(studentId: $studentId, projectId: $projectId)
+  }
+`;
+
+//FIN: GQL MUTACIONESSS
 
 const ListProjects = props => {
+
+    // INICIO: useMutation
     const [changeProjectState] = useMutation(CHANGESTATE);
+    const [addInscription] = useMutation(INSCRIBIRME);
+    // FIN : useMutation
 
 
     const handleRowClick = (row) => {
         console.log("r", row);
-        const {identificador, estado} = row;  
+        const { identificador, estado } = row;
 
-            let projectId = identificador;
-            let newState= (estado === "ACTIVO") ? "INACTIVO":"ACTIVO";     
-    
-             
-            changeProjectState({
-                variables: { projectId, newState }
-            });    
-            history.go(0);                 
+        let projectId = identificador;
+        let newState = (estado === "ACTIVO") ? "INACTIVO" : "ACTIVO";
+
+
+        changeProjectState({
+            variables: { projectId, newState }
+        });
+        history.go(0);
     }
 
-  
-
-  
 
 
 
 
-    const columnas = useMemo(()=>[
+
+
+
+    const columnas = useMemo(() => [
         {
             name: 'ID',
             selector: row => row.identificador,
@@ -107,7 +120,7 @@ const ListProjects = props => {
             ignoreRowClick: true,
             cell: (row, index, column, id) => <Button data-tag="allowRowEvents" onClick={() => { handleRowClick(row) }}>A/D</Button>
         },
-       
+
 
     ]);
 
@@ -147,7 +160,7 @@ const ListProjects = props => {
     }
   
   `;
-  
+
 
     const { loading, error, data } = useQuery(PROYECTOS)
     console.log("Data:", data);
@@ -290,36 +303,22 @@ const ListProjects = props => {
             dato.current.splice(0, dato.current.length);
         }
     });
-    const eliminarProducto = useCallback((idAEliminar) => {
-        // // Simple POST request with a JSON body using fetch
-        // user.getIdToken(true).then(token => {
-        //     const requestOptions = {
-        //         method: 'DELETE',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //             Authorization: `Bearer ${token}`,
-        //         },
 
-        //     }; //console.log(requestOptions);
-        //     //alert("Producto creado exitosamente");
-
-        //     fetch(`${BASE_URL}${PATH_PRODUCTS}/${idAEliminar}`, requestOptions).then(result => result.json()).then(result => {
-        //         console.log("result: ", result); //alert("Producto eliminado")
-        //         //this.cargarProductos();
-        //         dato.current.splice(0, dato.current.length);
-        //         setBorrar(true);
-        //         setEditar(true);
-        //     }, error => {
-        //         console.log(error);
-        //     });
-        // })
-    });
     const history = useHistory();
-    const mostrarModalActualizar = useCallback(() => {
+    const mostrarModalActualizar = useCallback(async() => {
 
+        if (rol != 'ESTUDIANTE') {
+            console.log('soy indefinido', dato.current[0].identificador)
+            return history.push(`list-projects/${dato.current[0].identificador}`)
+        }
 
-        console.log('soy indefinido', dato.current[0].identificador)
-        history.push(`list-projects/${dato.current[0].identificador}`)
+        const datica = await addInscription({
+            variables: {
+                "studentId": getIdentificacion(),
+                "projectId": dato.current[0].identificador
+              }
+        })
+        alert(datica.data.addInscription)
         // dato.current.map(registro => {
         //     setModalActualizar(true);
         //     setForm(registro);
@@ -419,6 +418,9 @@ const ListProjects = props => {
             },
         },
     };
+
+
+    const rol = getRol()
     return <div className="table-responsive"><br />
 
         <div className="barrabusqueda">
@@ -442,7 +444,7 @@ const ListProjects = props => {
         />
 
         <button type="button" name="editar" className="btnUtil" disabled={editar} onClick={() => mostrarModalActualizar(dato.current)}>
-            Editar
+            {rol == 'ESTUDIANTE' ? 'Inscribirme' : 'Editar'}
         </button>
 
         {/* <button type="button" name="borrar" className="btnUtil" disabled={borrar} onClick={() => handleDelete(dato.current)}>
