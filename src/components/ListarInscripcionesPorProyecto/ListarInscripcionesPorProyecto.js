@@ -36,30 +36,33 @@ changeProjectState(projectId: $projectId, newState: $newState)
 `;
 
 
-const ListProjects = props => {
-    const [changeProjectState] = useMutation(CHANGESTATE);
+const CHANGE_INSCRIPTION_STATE = gql`
+mutation ($inscriptionId: String, $newState: inscriptionState) {
+  changeInscriptionState(inscriptionId: $inscriptionId, newState: $newState)
+}
+`
+
+
+const ListarInscripciones = ({ match: { params: { identificador } } })=> {
+    const [changeInscriptionState] = useMutation(CHANGE_INSCRIPTION_STATE);
 
     const rol = getRol();
     const idUser = getIdentificacion();
 
     const handleRowClick = (row) => {
+        console.log("ROOOW", row)
+        const {_id, estado} = row;  
 
-        if(rol === "ADMINISTRADOR"){
-        console.log("r", row);
-        const {identificador, estado} = row;  
-
-            let projectId = identificador;
+            
             let newState= (estado === "ACTIVO") ? "INACTIVO":"ACTIVO";     
     
              
-            changeProjectState({
-                variables: { projectId, newState }
+            changeInscriptionState({
+                variables: { inscriptionId: _id, newState }
             });    
             history.go(0);  
-        }               
+                   
     }
-
-  
 
   
 
@@ -68,18 +71,18 @@ const ListProjects = props => {
 
     const columnas = useMemo(()=>[
         {
-            name: 'ID',
-            selector: row => row.identificador,
+            name: '_ID',
+            selector: row => row._id,
             sorteable: true            
         },
         {
-            name: 'Nombre del Proyecto',
-            selector: row => row.nombre,
+            name: 'idProyecto',
+            selector: row => row.idProyecto,
             sorteable: true
         },
         {
-            name: 'Presupuesto',
-            selector: row => row.presupuesto,
+            name: 'idEstudiante',
+            selector: row => row.idEstudiante,
             sorteable: true
         },
         {
@@ -88,31 +91,28 @@ const ListProjects = props => {
             sorteable: true
         },
         {
-            name: 'Fase',
-            selector: row => row.fase,
+            name: 'fdechaIngreso',
+            selector: row => row.fdechaIngreso,
             sorteable: true
         },
         {
-            name: 'Integrantes',
-            selector: row => row.integrantes.length,
+            name: 'fechaEgreso',
+            selector: row => row.fechaEgreso,
             sorteable: true
         },
         {
-            name: 'Fecha Inicio',
-            selector: row => row.fechaInicio,
-            sorteable: true
-        },
-        {
-            name: 'Fecha Fin',
-            selector: row => row.fechaFin,
-            sorteable: true
-        },
-        {
-            name: "Activar/Desactivar",
+            name: "Aceptar",
             sortable: false,
             allowOverflow: false,
             ignoreRowClick: true,
-            cell: (row, index, column, id) => <Button data-tag="allowRowEvents" onClick={() => { handleRowClick(row) }}>A/D</Button>
+            cell: (row, index, column, id) => <Button data-tag="allowRowEvents" onClick={() => { handleRowClick(row) }}>A/R</Button>
+        },
+        {
+            name: "Rechazar",
+            sortable: false,
+            allowOverflow: false,
+            ignoreRowClick: true,
+            cell: (row, index, column, id) => <Button data-tag="allowRowEvents" onClick={() => { handleRowClick(row) }}>A/R</Button>
         },
        
 
@@ -130,78 +130,34 @@ const ListProjects = props => {
 
 
 
-    const PROYECTOS = gql`
-    query Query {
-        proyectos {
-            identificador
-            nombre
-            integrantes{
-                nombre            
-            }
-            presupuesto
-            estado
-            fase
-            avances {
-                fecha
-                descripcion
-            }
-            lider {
-                nombre
-            }
-            fechaInicio
-            fechaFin
+    const INSCRIPCIONS_BY_PROJECT = gql`
+    query ($idProject: String) {
+        inscriptionsByProject(idProject: $idProject) {
+          _id
+          idProyecto
+          idEstudiante
+          estado
+          fdechaIngreso
+          fechaEgreso
         }
-    }
-  
+      }
   `;
   
 
-  const PROYECTS_BY_LIDER_ID = gql`
-  query FindProjectByLeaderId($leader: String) {
-    findProjectByLeaderId(leader: $leader) {
-      identificador
-      nombre
-      integrantes {
-        nombre
-      }
-      estado
-      avances {
-        fecha
-        descripcion
-        observaciones
-      }
-      lider {
-        nombre
-      }
-      objetivosGenerales
-      objetivosEspecificos
-      presupuesto
-      fase
-      fechaInicio
-      fechaFin
-    }
-  }
-  `
+
+  
   let proyectosFiltrados = []
 
-  if( rol != "LIDER"){
-    const { loading, error, data } = useQuery(PROYECTOS);
+
+    const { loading, error, data } = useQuery(INSCRIPCIONS_BY_PROJECT, {variables:{idProject: identificador}});
     try {
-        proyectosFiltrados = data.proyectos;
-        console.log("Data Todos los proyectos:", data);
+        proyectosFiltrados = data.inscriptionsByProject;
+        console.log("Data Todas las inscripciones", data);
     } catch {
         console.log('estoy en error')
     }
-  }
-  else {
-    const { loading, error, data } = useQuery(PROYECTS_BY_LIDER_ID, {variables:{leader:idUser}});
-    try {
-        proyectosFiltrados = data.findProjectByLeaderId;
-        console.log("Data todos los proyectos del lider:", data);
-    } catch {
-        console.log('estoy en error')
-    }
-  }
+  
+ 
     
     
 
@@ -376,12 +332,6 @@ const ListProjects = props => {
         //     console.log(id.current);
         // }); //this.setState({ modalActualizar: true, form: dato });
     });
-
-const mostrarModalInscripciones = useCallback(() =>{
-    history.push(`/user/list-projects/list-inscription/${dato?.current[0].identificador}`);
-})
-
-
     const cerrarModalActualizar = useCallback(() => {
         setModalActualizar(false);
         dato.current.splice(0, dato.current.length);
@@ -500,9 +450,9 @@ const mostrarModalInscripciones = useCallback(() =>{
             Editar
         </button>
 
-      <button type="button" name="borrar" className="btnUtil" disabled={borrar}  onClick={() => mostrarModalInscripciones(dato.current)}>
-            Listar Inscripciones
-        </button>
+        {/* <button type="button" name="borrar" className="btnUtil" disabled={borrar} onClick={() => handleDelete(dato.current)}>
+            Borrar
+        </button> */}
 
         <div>
 
@@ -580,4 +530,4 @@ const mostrarModalInscripciones = useCallback(() =>{
     </div>;
 };
 
-export default ListProjects;
+export default ListarInscripciones;
