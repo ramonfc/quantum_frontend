@@ -104,7 +104,7 @@ const dashboardRoutes = [
     icon: ExitToApp,
     component: CerrarSesion,
     layout: "/user",
-    permisos: 'ADMINSTRADOR, LIDER, ESTUDIANTE'
+    permisos: 'ADMINISTRADOR, LIDER, ESTUDIANTE'
   },
   {
     path: "/profile",
@@ -112,7 +112,7 @@ const dashboardRoutes = [
     icon: AccountCircle,
     component: UpgradeToPro,
     layout: "/user",
-    permisos: 'ADMINSTRADOR, LIDER, ESTUDIANTE'
+    permisos: 'ADMINISTRADOR, LIDER, ESTUDIANTE'
   },
 ];
 

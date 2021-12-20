@@ -13,7 +13,6 @@ import Carrusel from 'components/Carrusel/Carrusel'
 import EditarProyecto from 'components/EditarProyecto/EditarProyecto.js'
 
 import routes from "../../src/routes.js";
-let rutasModificadas = [];
 
 import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
 
@@ -21,7 +20,8 @@ import bgImage from "assets/img/sidebar-2.jpg";
 import logo from "assets/img/logoinvertido.png";
 import EditProfile from "components/EditProfile/EditProfile.js";
 import ActivateUser from "components/ActivateUser/ActivateUser.js";
-//import carruselListar from "components/carruselListar/carruselListar.js";
+
+import {getRol} from '../helpers/localStorage'
 
 
 let ps;
@@ -34,31 +34,17 @@ export default function Admin1({ ...rest }) {
  
   const [errors, seterrors] = useState('');
   const [rol, setRol] = useState('null');
+  let rutasModificadas = [];
 
 
-  //ROUTESS
-  
-  // if (user.email == 'justmarketco@gmail.com') {
-  //   rutasModificadas = routes
-  //   console.log('routes: ', routes);
-  //   console.log('rutasModificadas: ', rutasModificadas);
-  //   rutasModificadas.splice(3, 1);
-  // }
-  // let rol='null';
-   // FUNCION PARA ENCONTRAR ROL
- 
-
-
-
-  rutasModificadas = [];
   console.log('Admin Layout - routes: ', rutasModificadas);
   const switchRoutes = (
     <Switch>
       
       {routes.map((ruta, key) => {
         //console.log('key:', key);
-        
-        if (ruta.layout === "/user") {
+        const rol = getRol()
+        if (ruta.layout === "/user" && ruta.permisos.match(rol)) {
 
           rutasModificadas.push(ruta);
           return (
@@ -166,14 +152,7 @@ export default function Admin1({ ...rest }) {
         </div>
 
         <Footer />
-        {/* <FixedPlugin
-          handleImageClick={handleImageClick}
-          handleColorClick={handleColorClick}
-          bgColor={color}
-          bgImage={image}
-          handleFixedClick={handleFixedClick}
-          fixedClasses={fixedClasses}
-        /> */}
+        
       </div>
     </div>
   );
