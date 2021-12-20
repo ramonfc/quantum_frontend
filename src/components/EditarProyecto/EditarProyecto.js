@@ -97,6 +97,7 @@ const EditarProyecto = ({ match: { params: { identificador } } }) => {
               nombre
           }
           fase
+          estado
         }
       }
   `;

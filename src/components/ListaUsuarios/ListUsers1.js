@@ -3,6 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import DataTable from 'react-data-table-component';
 import { Link, useHistory } from 'react-router-dom';
 
+import { getRol } from 'helpers/localStorage';
+
 import {
     ApolloClient,
     InMemoryCache,
@@ -78,6 +80,7 @@ mutation ($inactiveUserId: String) {
 const ListUsers1 = props => {
 
     const history = useHistory();
+    const rol = getRol();
 
     const columnas = useMemo(() => [
         {
@@ -595,7 +598,7 @@ const ListUsers1 = props => {
                                 </Col>
 
                                 <Col>
-                                    <input type="radio" value="NO_AUTORIZADO" onClick={()=>{cambiarEstado("NO_AUTORIZADO", modalAprobar.datoAprobar)}} />
+                                    <input type={(rol ==="LIDER")?"hidden":"radio"} value="NO_AUTORIZADO" onClick={()=>{cambiarEstado("NO_AUTORIZADO", modalAprobar.datoAprobar)}} />
                                 </Col>
 
                             </Row>

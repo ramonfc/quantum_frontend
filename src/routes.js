@@ -23,7 +23,10 @@ import UpgradeToPro from "views/UpgradeToPro/UpgradeToPro.js";
 // core components/views for RTL layout
 import RTLPage from "views/RTLPage/RTLPage.js";
 
+import CrearProyecto from "components/CrearProyecto/CrearProyecto";
+
 import CerrarSesion from "views/CerrarSesion/CerrarSesion.js"
+import FormRegProd1 from "components/FormRegProd/FormRegProd1";
 
 const dashboardRoutes = [
   {
@@ -38,7 +41,7 @@ const dashboardRoutes = [
     path: "/create-project",
     name: "Crear Proyecto",
     icon: Add,
-    component: UserProfile,
+    component: CrearProyecto,
     layout: "/user",
     permisos: 'LIDER'
   },

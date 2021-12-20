@@ -26,6 +26,8 @@ import {
 } from "@apollo/client";
 
 
+import { getRol, getIdentificacion } from 'helpers/localStorage';
+
 
 const CHANGESTATE = gql`  
 mutation ($projectId: String, $newState: projectState) {
@@ -37,8 +39,12 @@ changeProjectState(projectId: $projectId, newState: $newState)
 const ListProjects = props => {
     const [changeProjectState] = useMutation(CHANGESTATE);
 
+    const rol = getRol();
+    const idUser = getIdentificacion();
 
     const handleRowClick = (row) => {
+
+        if(rol === "ADMINISTRADOR"){
         console.log("r", row);
         const {identificador, estado} = row;  
 
@@ -49,7 +55,8 @@ const ListProjects = props => {
             changeProjectState({
                 variables: { projectId, newState }
             });    
-            history.go(0);                 
+            history.go(0);  
+        }               
     }
 
   
@@ -63,7 +70,7 @@ const ListProjects = props => {
         {
             name: 'ID',
             selector: row => row.identificador,
-            sorteable: true
+            sorteable: true            
         },
         {
             name: 'Nombre del Proyecto',
@@ -149,18 +156,60 @@ const ListProjects = props => {
   `;
   
 
-    const { loading, error, data } = useQuery(PROYECTOS)
-    console.log("Data:", data);
+  const PROYECTS_BY_LIDER_ID = gql`
+  query FindProjectByLeaderId($leader: String) {
+    findProjectByLeaderId(leader: $leader) {
+      identificador
+      nombre
+      integrantes {
+        nombre
+      }
+      estado
+      avances {
+        fecha
+        descripcion
+        observaciones
+      }
+      lider {
+        nombre
+      }
+      objetivosGenerales
+      objetivosEspecificos
+      presupuesto
+      fase
+      fechaInicio
+      fechaFin
+    }
+  }
+  `
+  let proyectosFiltrados = []
 
-    //if (loading) return null;
-    if (error) return `Error! ${error}`;
-    console.log("Data1:", data);
-    let proyectosFiltrados = []
+  if( rol != "LIDER"){
+    const { loading, error, data } = useQuery(PROYECTOS);
     try {
-        proyectosFiltrados = data.proyectos
+        proyectosFiltrados = data.proyectos;
+        console.log("Data Todos los proyectos:", data);
     } catch {
         console.log('estoy en error')
     }
+  }
+  else {
+    const { loading, error, data } = useQuery(PROYECTS_BY_LIDER_ID, {variables:{leader:idUser}});
+    try {
+        proyectosFiltrados = data.findProjectByLeaderId;
+        console.log("Data todos los proyectos del lider:", data);
+    } catch {
+        console.log('estoy en error')
+    }
+  }
+    
+    
+
+    //if (loading) return null;
+   /*  if (error) return `Error! ${error}`; */
+ 
+    
+   
 
     // const auth = getAuth();
     // const [user, loading, error] = useAuthState(auth);
