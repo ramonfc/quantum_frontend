@@ -58,7 +58,7 @@ const columnas = [
     },
     {
         name: 'Activo',
-        selector: d => d.activo? 'Si':'No',
+        selector: 'activo' ,  //d => d.activo? 'Si':'No',
         sorteable: true
     },
 ]

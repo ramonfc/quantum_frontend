@@ -39,7 +39,7 @@ const EditProfile = ({ match: { params: { id } } }) => {
     //const history =  useHistory()
     const [editUserRecargado] = useMutation(EDITARPERFIL)
 
-    const editor = (e) => {
+    const editor = async (e) => {
         e.preventDefault();
 
         if (correoUsuario.value)
@@ -47,15 +47,15 @@ const EditProfile = ({ match: { params: { id } } }) => {
 
         console.log('capturalooo: ', activoUsuario.value)
         if (activoUsuario.value)
-            form.activo = activoUsuario.value === "true"? true:false;
+            form.activo = activoUsuario.value //=== "ACTIVO"? 'ACTIVO':'INACTIVO';
             console.log("activo editado en if: ", form.activo)
         if (contrasenaUsuario.value)
             form.contrasena = (contrasenaUsuario.value)
         console.log('evento', e)
 
         console.log('form en editor:', form)
-
-        editUserRecargado({
+        let datica = {};
+        datica = await editUserRecargado({
             variables: {   
                 newInfo:{
                     identificacion: id,
@@ -69,6 +69,12 @@ const EditProfile = ({ match: { params: { id } } }) => {
             }
         }
         )
+        console.log('datica: ',datica.data.updateUser)
+        if (datica.data.updateUser == true)
+        {
+            return alert('Actualización Exitosa!')
+        }
+        return alert('Actualización Fallida!')
         /* Login.setModalRegistro(false); */
     };
 
@@ -106,9 +112,10 @@ const EditProfile = ({ match: { params: { id } } }) => {
     console.log("Data1:", data);
     try {
         form = { ...data.findUserByPersonalId }
-        form.activo2 = form.activo == true ? "Si" : "No";
-
-        form.option = form.activo == true ? "No" : "Si";
+        
+        form.activo2 = form.activo == 'INACTIVO' ? "ACTIVO" : "INACTIVO";
+        form.option = form.activo == 'INACTIVO' ? "No" : "Si";
+        form.option2 = form.activo == 'INACTIVO' ? "Si" : "No";
 
     } catch {
         console.log('catch')
@@ -152,8 +159,8 @@ const EditProfile = ({ match: { params: { id } } }) => {
 
                 <label>Activo</label>
                 <select type="select" name="status" style={{ width: "100%", height: "2.5rem", fontSize: "1rem", border: "2px solid #d5dbe3", borderRadius: "5px" }} ref={u => activoUsuario = u} className="mb-4">
-                    <option selected value={form.activo}>{form.activo2}</option>
-                    <option value={!form.activo}>{form.option}</option>
+                    <option selected value={form.activo}>{form.option}</option>
+                    <option value={form.activo2}>{form.option2}</option>
                 </select>
 
 
