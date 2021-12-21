@@ -27,6 +27,7 @@ import CrearProyecto from "components/CrearProyecto/CrearProyecto.js";
 import ListarInscripcionesPorProyecto from "components/ListarInscripcionesPorProyecto/ListarInscripcionesPorProyecto.js";
 import ListarAvances from "components/ListarAvances/ListarAvances.js";
 import EditarAvance from "components/EditarAvance/EditarAvance"
+import CrearAvance from "components/CrearAvance/CrearAvance.js";
 
 let ps;
 
@@ -68,7 +69,8 @@ export default function Admin1({ ...rest }) {
         <Route exact path = '/user/inscriptions/:identificador' component={ListarInscripcionesPorProyecto}></Route>
         <Route exact path = '/user/avances/:identificador' component={ListarAvances}></Route>
        <Route exact path = '/user/avances/:identificador/:avance' component={EditarAvance}></Route>
-       
+       <Route exact path = '/user/avances/:proyecto' component={ListarAvances}></Route>
+       <Route exact path = '/user/advances/crear/:identificador' component={CrearAvance}></Route>
       <Redirect from="/user" to="/user/dashboard" />
     </Switch>
   );

@@ -508,12 +508,12 @@ const mostrarModalAvances = useCallback(() =>{
         </button>
 
    
-      <button type="button" name="borrar" style={(rol==="ESTUDIANTE")?{display:"none"}:{display:""}} className="btnUtil" disabled={borrar}  onClick={() => mostrarModalInscripciones(dato.current)}>
+      <button type="button" name="borrar" style={(rol==="ESTUDIANTE"|| rol==="ADMINISTRADOR")?{display:"none"}:{display:""}} className="btnUtil" disabled={borrar}  onClick={() => mostrarModalInscripciones(dato.current)}>
         Listas Inscripciones</button>
      
 
 
-        <button type="button" name="borrar" style={(rol==="ESTUDIANTE")?{display:"none"}:{display:""}} className="btnUtil" disabled={borrar}  onClick={() => mostrarModalAvances(dato.current)}>
+        <button type="button" name="borrar" style={(rol==="ESTUDIANTE" || rol==="ADMINISTRADOR")?{display:"none"}:{display:""}} className="btnUtil" disabled={borrar}  onClick={() => mostrarModalAvances(dato.current)}>
             Listar Avances
         </button>
 

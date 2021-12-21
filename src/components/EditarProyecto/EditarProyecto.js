@@ -128,7 +128,7 @@ const EditarProyecto = ({ match: { params: { identificador } } }) => {
     return (
         <div>
 
-            <div><h3>Actualizar producto {form.nombre}</h3></div>
+            <div><h3>Actualizar proyecto: {form.nombre}</h3></div>
 
             <form>
 

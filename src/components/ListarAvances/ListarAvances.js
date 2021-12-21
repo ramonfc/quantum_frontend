@@ -54,7 +54,7 @@ const ListarAvances = ({ match: { params: { identificador } } }) => {
     const rol = getRol();
     const idUser = getIdentificacion();
 
-    
+
 
 
 
@@ -212,7 +212,7 @@ const ListarAvances = ({ match: { params: { identificador } } }) => {
         console.log(e.selectedRows);
         dato.current = e.selectedRows;
         console.log("dato", dato.current.length);
-
+   
         if (rows.length === 0) {
             setBorrar(true);
             setEditar(true);
@@ -286,19 +286,19 @@ const ListarAvances = ({ match: { params: { identificador } } }) => {
         // })
     });
     const history = useHistory();
-    const mostrarModalActualizar = useCallback(() => {
+    const modificarAvance = useCallback(() => {
+
+        if (rol === "ESTUDIANTE") {
+            history.push(`../advances/crear/${identificador}`)
+        }
+        else {
+            console.log('project ID', identificador);
+            console.log("Data avance ID: ", data.advancesByProjectId[0].advanceId);
+            console.log(`avances/${identificador}/${data.advancesByProjectId[0].advanceId}`)
+            history.push(`/user/avances/${identificador}/${data.advancesByProjectId[0].advanceId}`)
+        }
 
 
-        console.log('project ID', identificador);
-        console.log("Data avance ID: ", data.advancesByProjectId[0].advanceId);
-        console.log(`avances/${identificador}/${data.advancesByProjectId[0].advanceId}`)
-        history.push(`../avances/${identificador}/${data.advancesByProjectId[0].advanceId}`)
-        // dato.current.map(registro => {
-        //     setModalActualizar(true);
-        //     setForm(registro);
-        //     id.current = registro._id;
-        //     console.log(id.current);
-        // }); //this.setState({ modalActualizar: true, form: dato });
     });
     const cerrarModalActualizar = useCallback(() => {
         setModalActualizar(false);
@@ -394,116 +394,121 @@ const ListarAvances = ({ match: { params: { identificador } } }) => {
     };
     return <div className="table-responsive"><br />
 
-<Card>
-        <GridItem>
-          <CardHeader color="info">
+        <Card>
+            <GridItem>
+                <CardHeader color="info">
 
-            <h4>Lista de avances proyecto {identificador}</h4>
+                    <h4>Lista de avances proyecto {identificador}</h4>
 
-          </CardHeader>
-          <div className="barrabusqueda">
-            <input type="text" placeholder="Buscar Producto" className="textfield" name="busqueda" value={busqueda} onChange={onChange} />
+                </CardHeader>
+                <div className="barrabusqueda">
+                    <input type="text" placeholder="Buscar Producto" className="textfield" name="busqueda" value={busqueda} onChange={onChange} />
 
-        </div>
+                </div>
 
 
-        <DataTable
-            columns={columnas}
-            data={proyectosFiltrados}
-            pagination paginationComponentOptions={paginacionopciones}
-            fixedHeader
-            selectableRows
-            selectableRowsHighlight
-            selectableRowsComponent={selectableRowsComponent.current}
-            onSelectedRowsChange={handleChange}
-            fixedHeaderScrollHeight="600px"
-            noDataComponent="No se encontraron productos"
+                <DataTable
+                    columns={columnas}
+                    data={proyectosFiltrados}
+                    pagination paginationComponentOptions={paginacionopciones}
+                    fixedHeader
+                    selectableRows
+                    selectableRowsHighlight
+                    selectableRowsComponent={selectableRowsComponent.current}
+                    onSelectedRowsChange={handleChange}
+                    fixedHeaderScrollHeight="600px"
+                    noDataComponent="No se encontraron productos"
 
-        />
+                />
 
-        <button type="button" name="editar" className="btnUtil" disabled={editar} onClick={() => mostrarModalActualizar(dato.current)}>
-            Editar
-        </button>
+                <button type="button" name="editar" style={(rol==="ESTUDIANTE")?{display:""}:{display:"none"}} className="btnUtil"  onClick={() => modificarAvance(dato.current)}>
+                   Crear Avance
+                </button>
 
-        {/* <button type="button" name="borrar" className="btnUtil" disabled={borrar} onClick={() => handleDelete(dato.current)}>
+
+
+                <button type="button" name="editar" className="btnUtil"style={(rol==="LIDER")?{display:""}:{display:"none"}} disabled={editar} onClick={() => modificarAvance(dato.current)}>
+                   Editar
+                </button>
+                {/* <button type="button" name="borrar" className="btnUtil" disabled={borrar} onClick={() => handleDelete(dato.current)}>
             Borrar
         </button> */}
 
-        <div>
+                <div>
 
-            <Modal isOpen={modalActualizar}>
-                <ModalHeader>
-                    <div><h3>Actualizar producto {form.nombreProducto}</h3></div>
-                </ModalHeader>
+                    <Modal isOpen={modalActualizar}>
+                        <ModalHeader>
+                            <div><h3>Actualizar producto {form.nombreProducto}</h3></div>
+                        </ModalHeader>
 
-                <ModalBody>
-                    <FormGroup>
-                        <label>
-                            Id del producto:
-                        </label>
+                        <ModalBody>
+                            <FormGroup>
+                                <label>
+                                    Id del producto:
+                                </label>
 
-                        <input className="form-control" readOnly type="text" value={form.sku} />
-                    </FormGroup>
+                                <input className="form-control" readOnly type="text" value={form.sku} />
+                            </FormGroup>
 
-                    <FormGroup>
-                        <label>
-                            Nombre del producto:
-                        </label>
-                        <input className="form-control" name="nombreProducto" type="text" onChange={handleChange1} value={form.nombreProducto} required />
-                    </FormGroup>
+                            <FormGroup>
+                                <label>
+                                    Nombre del producto:
+                                </label>
+                                <input className="form-control" name="nombreProducto" type="text" onChange={handleChange1} value={form.nombreProducto} required />
+                            </FormGroup>
 
-                    <FormGroup>
-                        <label>
-                            Descripcion:
-                        </label>
-                        <input className="form-control" name="descripcionProducto" type="text" onChange={handleChange1} value={form.descripcionProducto} />
-                    </FormGroup>
+                            <FormGroup>
+                                <label>
+                                    Descripcion:
+                                </label>
+                                <input className="form-control" name="descripcionProducto" type="text" onChange={handleChange1} value={form.descripcionProducto} />
+                            </FormGroup>
 
-                    <FormGroup>
-                        <label>
-                            Cantidad:
-                        </label>
-                        <input className="form-control" name="cantidadDisponible" type="text" onChange={handleChange1} value={form.cantidadDisponible} />
-                    </FormGroup>
+                            <FormGroup>
+                                <label>
+                                    Cantidad:
+                                </label>
+                                <input className="form-control" name="cantidadDisponible" type="text" onChange={handleChange1} value={form.cantidadDisponible} />
+                            </FormGroup>
 
-                    <FormGroup>
-                        {/* <label>
+                            <FormGroup>
+                                {/* <label>
                             Estado:
                         </label>
                         <input className="form-control" name="estadoProdInv" type="text" onChange={handleChange1} value={form.estadoProdInv} /> */}
 
-                        <label>Estado: </label>
-                        <select type="select" style={{ width: "100%", height: "2.5rem", fontSize: "1rem", border: "2px solid #d5dbe3", borderRadius: "5px" }} name="estadoProdInv" onChange={handleChange1} value={form.estadoProdInv} className="mb-4">
-                            <option value=""></option>
-                            <option value="Disponible">Disponible</option>
-                            <option value="No Disponible">No Disponible</option>
-                        </select>
+                                <label>Estado: </label>
+                                <select type="select" style={{ width: "100%", height: "2.5rem", fontSize: "1rem", border: "2px solid #d5dbe3", borderRadius: "5px" }} name="estadoProdInv" onChange={handleChange1} value={form.estadoProdInv} className="mb-4">
+                                    <option value=""></option>
+                                    <option value="Disponible">Disponible</option>
+                                    <option value="No Disponible">No Disponible</option>
+                                </select>
 
-                    </FormGroup>
-                    <FormGroup>
-                        <label>
-                            Precio Unitario:
-                        </label>
-                        <input className="form-control" name="precioUnitario" type="text" onChange={handleChange1} value={form.precioUnitario} />
-                    </FormGroup>
-                </ModalBody>
+                            </FormGroup>
+                            <FormGroup>
+                                <label>
+                                    Precio Unitario:
+                                </label>
+                                <input className="form-control" name="precioUnitario" type="text" onChange={handleChange1} value={form.precioUnitario} />
+                            </FormGroup>
+                        </ModalBody>
 
-                <ModalFooter>
-                    <Button className="btnUtil1" onClick={() => handleUpdate(id.current, form)}>
-                        Actualizar
-                    </Button>
-                    <Button className="btnUtil1" onClick={() => cerrarModalActualizar()}>
-                        Cancelar
-                    </Button>
-                </ModalFooter>
-            </Modal>
+                        <ModalFooter>
+                            <Button className="btnUtil1" onClick={() => handleUpdate(id.current, form)}>
+                                Actualizar
+                            </Button>
+                            <Button className="btnUtil1" onClick={() => cerrarModalActualizar()}>
+                                Cancelar
+                            </Button>
+                        </ModalFooter>
+                    </Modal>
 
-        </div>
-         
-        </GridItem >
-      </Card>
+                </div>
 
-       
+            </GridItem >
+        </Card>
+
+
 
 
 

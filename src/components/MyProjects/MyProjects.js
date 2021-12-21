@@ -120,13 +120,13 @@ const MyProjects = props => {
             sorteable: true
         },
        
-        {
+       /*  {
             name: "Activar/Desactivar",
             sortable: false,
             allowOverflow: false,
             ignoreRowClick: true,
             cell: (row, index, column, id) => <Button data-tag="allowRowEvents" onClick={() => { handleRowClick(row) }}>A/D</Button>
-        },
+        }, */
 
 
     ]);
@@ -150,6 +150,7 @@ const MyProjects = props => {
 
   console.log("ID USER:", idUser)
     const { loading, error, data } = useQuery(MY_PROJECTS, {variables:{findProjectByStudenIdId:idUser}});
+    if(loading) return null;
     try {
         proyectosFiltrados = data.findProjectByStudentId;
         console.log("Data todos los proyectos del lider:", data);
@@ -169,8 +170,8 @@ const MyProjects = props => {
     // const auth = getAuth();
     // const [user, loading, error] = useAuthState(auth);
     // const history = useHistory();
-    const [newVal, setNewVal] = React.useState(0);
-    const [isLoaded, setIsLoaded] = React.useState(false);
+    const [newVal, setNewVal] = useState(0);
+    const [isLoaded, setIsLoaded] = useState(false);
     const [errors, setErrors] = useState();
     const [busqueda, setBusqueda] = useState();
     const [productosFiltrados, setProductosFiltrados] = useState([]);
@@ -279,33 +280,17 @@ const MyProjects = props => {
    
 
     const history = useHistory();
-    const mostrarModalActualizar = useCallback(async() => {
-
-        if (rol != 'ESTUDIANTE') {
+  /*   const mostrarAvances = useCallback(async() => {
             console.log('soy indefinido', dato.current[0].identificador)
-            return history.push(`list-projects/${dato.current[0].identificador}`)
-        }
+            return history.push(`/avances/${dato.current[0].identificador}`)
 
-      /*   const datica = await addInscription({
-            variables: {
-                "studentId": getIdentificacion(),
-                "projectId": dato.current[0].identificador
-              }
-        })
-        alert(datica.data.addInscription) */
-        // dato.current.map(registro => {
-        //     setModalActualizar(true);
-        //     setForm(registro);
-        //     id.current = registro._id;
-        //     console.log(id.current);
-        // }); //this.setState({ modalActualizar: true, form: dato });
-    });
+    }); */
 
 const mostrarModalInscripciones = useCallback(() =>{
     history.push(`/user/inscriptions/${dato?.current[0].identificador}`);
 })
 
-const mostrarModalAvances = useCallback(() =>{
+const mostrarAvances  = useCallback(() =>{
     history.push(`/user/avances/${dato?.current[0].identificador}`);
 })
 
@@ -365,8 +350,8 @@ const mostrarModalAvances = useCallback(() =>{
         /> 
 
 
-        <button type="button" name="editar" className="btnUtil" disabled={editar} onClick={() => mostrarModalActualizar(dato.current)}>
-            {rol == 'ESTUDIANTE' ? 'Inscribirme' : 'Editar'}
+        <button type="button" name="editar" className="btnUtil" disabled={editar} onClick={() => mostrarAvances(dato.current)}>
+            {rol == 'ESTUDIANTE' ? 'Listar Avances' : 'Editar'}
         </button>
 
    
