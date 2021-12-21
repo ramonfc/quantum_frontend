@@ -61,14 +61,14 @@ const dashboardRoutes = [
     layout: "/user",
     permisos: 'ESTUDIANTE, LIDER'
   },
-  {
+  /* {
     path: "/inscriptions",
     name: "Listar Inscripciones",
     icon: ListAlt,
     component: Icons,
     layout: "/user",
     permisos: 'LIDER'
-  },
+  }, */
   {
     path: "/my-inscriptions",
     name: "Mis Inscripciones",

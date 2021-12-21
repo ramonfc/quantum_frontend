@@ -7,6 +7,11 @@ import { useHistory } from 'react-router-dom';
 // import { useHistory } from "react-router";
 // import { getAuth } from "firebase/auth";
 
+
+import Card from "components/Card/Card";
+import CardHeader from "components/Card/CardHeader";
+import GridItem from "components/Grid/GridItem";
+
 import {
     Button,
     Modal,
@@ -43,88 +48,37 @@ mutation ($inscriptionId: String, $newState: inscriptionState) {
 `
 
 
-const ListarInscripciones = ({ match: { params: { identificador } } }) => {
+const ListarAvances = ({ match: { params: { identificador } } }) => {
     const [changeInscriptionState] = useMutation(CHANGE_INSCRIPTION_STATE);
 
     const rol = getRol();
     const idUser = getIdentificacion();
 
-    const handleRowClickAccept = (row) => {
-        console.log("ROOOW", row)
-        const { _id, estado } = row;
-
-        if (estado == "PENDIENTE") {
-            changeInscriptionState({
-                variables: { inscriptionId: _id, newState: "ACEPTADA" }
-            });
-            history.go(0);
-        }
-
-
-    }
-
-    const handleRowClickReject = (row) => {
-        console.log("ROOOW", row)
-        const { _id, estado } = row;
-        if (estado == "PENDIENTE") {
-            changeInscriptionState({
-                variables: { inscriptionId: _id, newState: "RECHAZADA" }
-            });
-            history.go(0);
-        }
-
-
-    }
-
-
+    
 
 
 
     const columnas = useMemo(() => [
         {
-            name: '_ID',
-            selector: row => row._id,
+            name: 'ID Avance',
+            selector: row => row.advanceId,
             sorteable: true
         },
         {
-            name: 'idProyecto',
-            selector: row => row.idProyecto,
+            name: 'fecha',
+            selector: row => row.fecha,
             sorteable: true
         },
         {
-            name: 'idEstudiante',
-            selector: row => row.idEstudiante,
+            name: 'descripcion',
+            selector: row => row.descripcion,
             sorteable: true
         },
         {
-            name: 'Estado',
-            selector: row => row.estado,
+            name: 'observaciones',
+            selector: row => row.observaciones.observaciones,
             sorteable: true
-        },
-        {
-            name: 'fdechaIngreso',
-            selector: row => row.fdechaIngreso,
-            sorteable: true
-        },
-        {
-            name: 'fechaEgreso',
-            selector: row => row.fechaEgreso,
-            sorteable: true
-        },
-        {
-            name: "Aceptar",
-            sortable: false,
-            allowOverflow: false,
-            ignoreRowClick: true,
-            cell: (row, index, column, id) => <Button data-tag="allowRowEvents" onClick={() => { handleRowClickAccept(row) }}>A</Button>
-        },
-        {
-            name: "Rechazar",
-            sortable: false,
-            allowOverflow: false,
-            ignoreRowClick: true,
-            cell: (row, index, column, id) => <Button data-tag="allowRowEvents" onClick={() => { handleRowClickReject(row) }}>R</Button>
-        },
+        }
 
 
     ]);
@@ -141,15 +95,16 @@ const ListarInscripciones = ({ match: { params: { identificador } } }) => {
 
 
 
-    const INSCRIPCIONS_BY_PROJECT = gql`
-    query ($idProject: String) {
-        inscriptionsByProject(idProject: $idProject) {
-          _id
+    const ADVANCES_BY_PROJECT = gql`
+    query AdvancesByProjectId($projectId: String) {
+        advancesByProjectId(projectId: $projectId) {
           idProyecto
-          idEstudiante
-          estado
-          fdechaIngreso
-          fechaEgreso
+          advanceId
+          fecha
+          descripcion
+          observaciones{
+              observaciones
+          }
         }
       }
   `;
@@ -160,10 +115,10 @@ const ListarInscripciones = ({ match: { params: { identificador } } }) => {
     let proyectosFiltrados = []
 
 
-    const { loading, error, data } = useQuery(INSCRIPCIONS_BY_PROJECT, { variables: { idProject: identificador } });
+    const { loading, error, data } = useQuery(ADVANCES_BY_PROJECT, { variables: { projectId: identificador } });
     try {
-        proyectosFiltrados = data.inscriptionsByProject;
-        console.log("Data Todas las inscripciones", data);
+        proyectosFiltrados = data.advancesByProjectId;
+        console.log("Avances", data);
     } catch {
         console.log('estoy en error')
     }
@@ -334,8 +289,10 @@ const ListarInscripciones = ({ match: { params: { identificador } } }) => {
     const mostrarModalActualizar = useCallback(() => {
 
 
-        console.log('soy indefinido', dato.current[0].identificador)
-        history.push(`list-projects/${dato.current[0].identificador}`)
+        console.log('project ID', identificador);
+        console.log("Data avance ID: ", data.advancesByProjectId[0].advanceId);
+        console.log(`avances/${identificador}/${data.advancesByProjectId[0].advanceId}`)
+        history.push(`../avances/${identificador}/${data.advancesByProjectId[0].advanceId}`)
         // dato.current.map(registro => {
         //     setModalActualizar(true);
         //     setForm(registro);
@@ -437,7 +394,14 @@ const ListarInscripciones = ({ match: { params: { identificador } } }) => {
     };
     return <div className="table-responsive"><br />
 
-        <div className="barrabusqueda">
+<Card>
+        <GridItem>
+          <CardHeader color="info">
+
+            <h4>Lista de avances proyecto {identificador}</h4>
+
+          </CardHeader>
+          <div className="barrabusqueda">
             <input type="text" placeholder="Buscar Producto" className="textfield" name="busqueda" value={busqueda} onChange={onChange} />
 
         </div>
@@ -535,10 +499,15 @@ const ListarInscripciones = ({ match: { params: { identificador } } }) => {
             </Modal>
 
         </div>
+         
+        </GridItem >
+      </Card>
+
+       
 
 
 
     </div>;
 };
 
-export default ListarInscripciones;
+export default ListarAvances;

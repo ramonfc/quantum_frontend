@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom';
 // import { useAuthState } from "react-firebase-hooks/auth";
 // import { useHistory } from "react-router";
 // import { getAuth } from "firebase/auth";
+import { getRol, getIdentificacion} from 'helpers/localStorage';
 
 import {
     Button,
@@ -26,7 +27,8 @@ import {
 } from "@apollo/client";
 
 
-import { getRol, getIdentificacion } from 'helpers/localStorage';
+//INICIO: GQL MUTACIONESSS
+
 
 
 const CHANGESTATE = gql`  
@@ -35,45 +37,55 @@ changeProjectState(projectId: $projectId, newState: $newState)
 }
 `;
 
+/* const INSCRIBIRME = gql`  
+mutation AddInscription($studentId: String, $projectId: String) {
+    addInscription(studentId: $studentId, projectId: $projectId)
+  }
+`; */
 
-const CHANGE_INSCRIPTION_STATE = gql`
-mutation ($inscriptionId: String, $newState: inscriptionState) {
-  changeInscriptionState(inscriptionId: $inscriptionId, newState: $newState)
-}
+const MY_PROJECTS = gql`
+query ($findProjectByStudenIdId: String) {
+    findProjectByStudentId(id: $findProjectByStudenIdId) {
+      identificador
+      nombre
+      fase
+      lider {
+        nombre
+      }
+      estado
+    }
+  }
 `
 
+//FIN: GQL MUTACIONESSS
 
-const ListarInscripciones = ({ match: { params: { identificador } } }) => {
-    const [changeInscriptionState] = useMutation(CHANGE_INSCRIPTION_STATE);
+const MyProjects = props => {
+  
+    // INICIO: useMutation
+    /* const [changeProjectState] = useMutation(CHANGESTATE); */
+    /* const [addInscription] = useMutation(INSCRIBIRME); */
+
+   
+    // FIN : useMutation
 
     const rol = getRol();
-    const idUser = getIdentificacion();
+    const idUser = props.id;
 
-    const handleRowClickAccept = (row) => {
-        console.log("ROOOW", row)
-        const { _id, estado } = row;
+    const handleRowClick = (row) => {
 
-        if (estado == "PENDIENTE") {
-            changeInscriptionState({
-                variables: { inscriptionId: _id, newState: "ACEPTADA" }
-            });
-            history.go(0);
-        }
+        if(rol === "ADMINISTRADOR"){
+        console.log("r", row);
+        const {identificador, estado} = row;  
 
-
-    }
-
-    const handleRowClickReject = (row) => {
-        console.log("ROOOW", row)
-        const { _id, estado } = row;
-        if (estado == "PENDIENTE") {
-            changeInscriptionState({
-                variables: { inscriptionId: _id, newState: "RECHAZADA" }
-            });
-            history.go(0);
-        }
-
-
+            let projectId = identificador;
+            let newState= (estado === "ACTIVO") ? "INACTIVO":"ACTIVO";     
+    
+             
+       /*      changeProjectState({
+                variables: { projectId, newState }
+            });     */
+            history.go(0);  
+        }               
     }
 
 
@@ -82,48 +94,38 @@ const ListarInscripciones = ({ match: { params: { identificador } } }) => {
 
     const columnas = useMemo(() => [
         {
-            name: '_ID',
-            selector: row => row._id,
-            sorteable: true
+            name: 'ID',
+            selector: row => row.identificador,
+            sorteable: true            
         },
         {
-            name: 'idProyecto',
-            selector: row => row.idProyecto,
+            name: 'Nombre del Proyecto',
+            selector: row => row.nombre,
             sorteable: true
         },
-        {
-            name: 'idEstudiante',
-            selector: row => row.idEstudiante,
-            sorteable: true
-        },
+        
         {
             name: 'Estado',
             selector: row => row.estado,
             sorteable: true
         },
         {
-            name: 'fdechaIngreso',
-            selector: row => row.fdechaIngreso,
+            name: 'Fase',
+            selector: row => row.fase,
             sorteable: true
         },
         {
-            name: 'fechaEgreso',
-            selector: row => row.fechaEgreso,
+            name: 'Lider',
+            selector: row => row.lider.nombre,
             sorteable: true
         },
+       
         {
-            name: "Aceptar",
+            name: "Activar/Desactivar",
             sortable: false,
             allowOverflow: false,
             ignoreRowClick: true,
-            cell: (row, index, column, id) => <Button data-tag="allowRowEvents" onClick={() => { handleRowClickAccept(row) }}>A</Button>
-        },
-        {
-            name: "Rechazar",
-            sortable: false,
-            allowOverflow: false,
-            ignoreRowClick: true,
-            cell: (row, index, column, id) => <Button data-tag="allowRowEvents" onClick={() => { handleRowClickReject(row) }}>R</Button>
+            cell: (row, index, column, id) => <Button data-tag="allowRowEvents" onClick={() => { handleRowClick(row) }}>A/D</Button>
         },
 
 
@@ -141,42 +143,28 @@ const ListarInscripciones = ({ match: { params: { identificador } } }) => {
 
 
 
-    const INSCRIPCIONS_BY_PROJECT = gql`
-    query ($idProject: String) {
-        inscriptionsByProject(idProject: $idProject) {
-          _id
-          idProyecto
-          idEstudiante
-          estado
-          fdechaIngreso
-          fechaEgreso
-        }
-      }
-  `;
+    
 
+ 
+  let proyectosFiltrados = []
 
-
-
-    let proyectosFiltrados = []
-
-
-    const { loading, error, data } = useQuery(INSCRIPCIONS_BY_PROJECT, { variables: { idProject: identificador } });
+  console.log("ID USER:", idUser)
+    const { loading, error, data } = useQuery(MY_PROJECTS, {variables:{findProjectByStudenIdId:idUser}});
     try {
-        proyectosFiltrados = data.inscriptionsByProject;
-        console.log("Data Todas las inscripciones", data);
+        proyectosFiltrados = data.findProjectByStudentId;
+        console.log("Data todos los proyectos del lider:", data);
     } catch {
         console.log('estoy en error')
     }
-
-
-
-
+  
+    
+    
 
     //if (loading) return null;
-    /*  if (error) return `Error! ${error}`; */
-
-
-
+   /*  if (error) return `Error! ${error}`; */
+ 
+    
+   
 
     // const auth = getAuth();
     // const [user, loading, error] = useAuthState(auth);
@@ -288,54 +276,23 @@ const ListarInscripciones = ({ match: { params: { identificador } } }) => {
     });
 
 
-    const handleDelete = useCallback(() => {
-        console.log(dato);
-        console.log(dato.length);
-        console.log("dc", dato.current);
+   
 
-        if (window.confirm(`Está usted seguro de borrar:\r ${dato.current.map(r => r.nombreProducto)}?`)) {
-            let msg = [];
-            let arregloProductos = dato.current;
-            console.log("AP", arregloProductos);
-            arregloProductos.map(registro => {
-                msg.push(registro.nombreProducto);
-                eliminarProducto(registro._id);
-            });
-            alert("Se eliminaron: " + msg.join(","));
-            cargarProductos();
-            dato.current.splice(0, dato.current.length);
-        }
-    });
-    const eliminarProducto = useCallback((idAEliminar) => {
-        // // Simple POST request with a JSON body using fetch
-        // user.getIdToken(true).then(token => {
-        //     const requestOptions = {
-        //         method: 'DELETE',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //             Authorization: `Bearer ${token}`,
-        //         },
-
-        //     }; //console.log(requestOptions);
-        //     //alert("Producto creado exitosamente");
-
-        //     fetch(`${BASE_URL}${PATH_PRODUCTS}/${idAEliminar}`, requestOptions).then(result => result.json()).then(result => {
-        //         console.log("result: ", result); //alert("Producto eliminado")
-        //         //this.cargarProductos();
-        //         dato.current.splice(0, dato.current.length);
-        //         setBorrar(true);
-        //         setEditar(true);
-        //     }, error => {
-        //         console.log(error);
-        //     });
-        // })
-    });
     const history = useHistory();
-    const mostrarModalActualizar = useCallback(() => {
+    const mostrarModalActualizar = useCallback(async() => {
 
+        if (rol != 'ESTUDIANTE') {
+            console.log('soy indefinido', dato.current[0].identificador)
+            return history.push(`list-projects/${dato.current[0].identificador}`)
+        }
 
-        console.log('soy indefinido', dato.current[0].identificador)
-        history.push(`list-projects/${dato.current[0].identificador}`)
+      /*   const datica = await addInscription({
+            variables: {
+                "studentId": getIdentificacion(),
+                "projectId": dato.current[0].identificador
+              }
+        })
+        alert(datica.data.addInscription) */
         // dato.current.map(registro => {
         //     setModalActualizar(true);
         //     setForm(registro);
@@ -343,6 +300,16 @@ const ListarInscripciones = ({ match: { params: { identificador } } }) => {
         //     console.log(id.current);
         // }); //this.setState({ modalActualizar: true, form: dato });
     });
+
+const mostrarModalInscripciones = useCallback(() =>{
+    history.push(`/user/inscriptions/${dato?.current[0].identificador}`);
+})
+
+const mostrarModalAvances = useCallback(() =>{
+    history.push(`/user/avances/${dato?.current[0].identificador}`);
+})
+
+
     const cerrarModalActualizar = useCallback(() => {
         setModalActualizar(false);
         dato.current.splice(0, dato.current.length);
@@ -350,72 +317,8 @@ const ListarInscripciones = ({ match: { params: { identificador } } }) => {
         setEditar(true);
     });
 
-    const handleUpdate = useCallback((id, form) => {
-        console.log("body:", dato.current);
-        cerrarModalActualizar(); // Simple POST request with a JSON body using fetch
-
-        user.getIdToken(true).then(token => {
-            const requestOptions = {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(form)
-            }; //console.log(requestOptions);
-            //alert("Producto creado exitosamente");
-
-            fetch(`${BASE_URL}${PATH_PRODUCTS}/${id}`, requestOptions)
-                .then(result => result.json())
-                .then(result => {
-                    console.log("result: ", result);
-                    cargarProductos();
-                    dato.current.splice(0, dato.current.length);
-                    setBorrar(true);
-                    setEditar(true);
-                    alert("Producto Actualizado");
-                    setNewVal(newVal + 1);
-                }, error => {
-                    console.log(error);
-                });
-        })
-    });
-    const cargarProductos = async () => {
-
-        user.getIdToken(true).then(async (token) => {
-            const requestOptions = {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-            };
-
-            const response = await fetch(`${BASE_URL}${PATH_PRODUCTS}`, requestOptions);
-            const result = await response.json();
-            console.log("R", result);
-            setProductos(result);
-            setProductosFiltrados(result);
-        })
-        /* fetch(`${BASE_URL}${PATH_PRODUCTS}`)
-          .then(result => result.json())
-          .then(
-            (result) => {
-              this.setState({
-                productos: result
-              });
-              console.log("result: ",result);
-              console.log("productos en cargarProductos: ",this.state.productos)
-             },
-            // Nota: es importante manejar errores aquí y no en 
-            // un bloque catch() para que no interceptemos errores
-            // de errores reales en los componentes.
-            (error) => {
-              console.log(error);
-            }
-          ) */
-    };
-
+    
+   
     const customStyles = {
         rows: {
             style: {
@@ -435,6 +338,10 @@ const ListarInscripciones = ({ match: { params: { identificador } } }) => {
             },
         },
     };
+
+    const rol1 = (rol==="ESTUDIANTE")?"none":"";
+
+    
     return <div className="table-responsive"><br />
 
         <div className="barrabusqueda">
@@ -443,7 +350,7 @@ const ListarInscripciones = ({ match: { params: { identificador } } }) => {
         </div>
 
 
-        <DataTable
+       <DataTable
             columns={columnas}
             data={proyectosFiltrados}
             pagination paginationComponentOptions={paginacionopciones}
@@ -455,15 +362,22 @@ const ListarInscripciones = ({ match: { params: { identificador } } }) => {
             fixedHeaderScrollHeight="600px"
             noDataComponent="No se encontraron productos"
 
-        />
+        /> 
+
 
         <button type="button" name="editar" className="btnUtil" disabled={editar} onClick={() => mostrarModalActualizar(dato.current)}>
-            Editar
+            {rol == 'ESTUDIANTE' ? 'Inscribirme' : 'Editar'}
         </button>
 
-        {/* <button type="button" name="borrar" className="btnUtil" disabled={borrar} onClick={() => handleDelete(dato.current)}>
-            Borrar
-        </button> */}
+   
+      <button type="button" name="borrar" style={(rol==="ESTUDIANTE")?{display:"none"}:{display:""}} className="btnUtil" disabled={borrar}  onClick={() => mostrarModalInscripciones(dato.current)}>
+        Listas Inscripciones</button>
+     
+
+
+        <button type="button" name="borrar" style={(rol==="ESTUDIANTE")?{display:"none"}:{display:""}} className="btnUtil" disabled={borrar}  onClick={() => mostrarModalAvances(dato.current)}>
+            Listar Avances
+        </button>
 
         <div>
 
@@ -541,4 +455,4 @@ const ListarInscripciones = ({ match: { params: { identificador } } }) => {
     </div>;
 };
 
-export default ListarInscripciones;
+export default MyProjects;

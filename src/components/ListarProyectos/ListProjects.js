@@ -28,7 +28,7 @@ import {
 
 
 //INICIO: GQL MUTACIONESSS
-import { getRol, getIdentificacion } from 'helpers/localStorage';
+
 
 
 const CHANGESTATE = gql`  
@@ -377,7 +377,11 @@ const ListProjects = props => {
     });
 
 const mostrarModalInscripciones = useCallback(() =>{
-    history.push(`/user/list-projects/list-inscription/${dato?.current[0].identificador}`);
+    history.push(`/user/inscriptions/${dato?.current[0].identificador}`);
+})
+
+const mostrarModalAvances = useCallback(() =>{
+    history.push(`/user/avances/${dato?.current[0].identificador}`);
 })
 
 
@@ -474,8 +478,9 @@ const mostrarModalInscripciones = useCallback(() =>{
         },
     };
 
+    const rol1 = (rol==="ESTUDIANTE")?"none":"";
 
-    const rol = getRol()
+    
     return <div className="table-responsive"><br />
 
         <div className="barrabusqueda">
@@ -502,8 +507,14 @@ const mostrarModalInscripciones = useCallback(() =>{
             {rol == 'ESTUDIANTE' ? 'Inscribirme' : 'Editar'}
         </button>
 
-      <button type="button" name="borrar" className="btnUtil" disabled={borrar}  onClick={() => mostrarModalInscripciones(dato.current)}>
-            Listar Inscripciones
+   
+      <button type="button" name="borrar" style={(rol==="ESTUDIANTE")?{display:"none"}:{display:""}} className="btnUtil" disabled={borrar}  onClick={() => mostrarModalInscripciones(dato.current)}>
+        Listas Inscripciones</button>
+     
+
+
+        <button type="button" name="borrar" style={(rol==="ESTUDIANTE")?{display:"none"}:{display:""}} className="btnUtil" disabled={borrar}  onClick={() => mostrarModalAvances(dato.current)}>
+            Listar Avances
         </button>
 
         <div>

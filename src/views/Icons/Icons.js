@@ -2,7 +2,7 @@
 import ListSales2 from "components/ListVentas/ListSales2.js";
 import React from "react";
 //import ListVentas from '../../components/ListVentas/ListVentas'
-import ListSales1 from '../../components/ListVentas/ListSales1.js'
+import ListarInscripciones from "components/ListarInscripcionesPorProyecto/ListarInscripcionesPorProyecto";
 
 import Card from "components/Card/Card";
 import CardHeader from "components/Card/CardHeader";
@@ -33,7 +33,7 @@ export default function Icons() {
             <h4>Lista de ventas</h4>
 
           </CardHeader>
-          <ListSales2 />
+          <ListarInscripciones />
         </GridItem >
       </Card>
     

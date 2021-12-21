@@ -54,7 +54,7 @@ export default function TableList() {
         <GridItem>
           <CardHeader color="info">
 
-            <h4>Lista de Proyetos</h4>
+            <h4>Lista de Proyectos</h4>
 
           </CardHeader>
           <ListProjects />

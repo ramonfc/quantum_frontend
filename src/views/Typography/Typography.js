@@ -1,3 +1,5 @@
+import MyProjects from "components/MyProjects/MyProjects";
+import { getIdentificacion } from "helpers/localStorage";
 import React from "react";
 import FormRegVentas from '../../components/FormRegVentas/FormRegVentas';
 // @material-ui/core components
@@ -52,13 +54,13 @@ import FormRegVentas from '../../components/FormRegVentas/FormRegVentas';
 // };
 
 // const useStyles = makeStyles(styles);
-
+const identificacion = getIdentificacion();
 export default function TypographyPage() {
   //const classes = useStyles();
   return (
     <>
 
-      <FormRegVentas/>
+      <MyProjects id={identificacion}/>
 
     </>
     // <Card>

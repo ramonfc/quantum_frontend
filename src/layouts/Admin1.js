@@ -25,7 +25,8 @@ import {getRol} from '../helpers/localStorage'
 import FormRegProd1 from "components/FormRegProd/FormRegProd1.js";
 import CrearProyecto from "components/CrearProyecto/CrearProyecto.js";
 import ListarInscripcionesPorProyecto from "components/ListarInscripcionesPorProyecto/ListarInscripcionesPorProyecto.js";
-
+import ListarAvances from "components/ListarAvances/ListarAvances.js";
+import EditarAvance from "components/EditarAvance/EditarAvance"
 
 let ps;
 
@@ -64,9 +65,9 @@ export default function Admin1({ ...rest }) {
        <Route exact path = '/user/list-projects/:identificador' component={EditarProyecto}></Route>
        <Route exact path = '/user/profile/:id' component={EditProfile}></Route>
        <Route exact path = '/user/active-user/:id' component={ActivateUser}></Route>
-        <Route exact path = '/user/list-projects/list-inscription/:identificador' component={ListarInscripcionesPorProyecto}></Route>
-       {/*<Route exact path = '/user/inscripcion/edit' component={carruselListar}></Route>
-       <Route exact path = '/user/avance/edit' component={carruselListar}></Route> */}
+        <Route exact path = '/user/inscriptions/:identificador' component={ListarInscripcionesPorProyecto}></Route>
+        <Route exact path = '/user/avances/:identificador' component={ListarAvances}></Route>
+       <Route exact path = '/user/avances/:identificador/:avance' component={EditarAvance}></Route>
        
       <Redirect from="/user" to="/user/dashboard" />
     </Switch>
