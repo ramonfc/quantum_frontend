@@ -3,6 +3,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import DataTable from 'react-data-table-component';
 import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
+
+import Card from "components/Card/Card";
+import CardHeader from "components/Card/CardHeader";
+import GridItem from "components/Grid/GridItem";
+
+
 // import { useAuthState } from "react-firebase-hooks/auth";
 // import { useHistory } from "react-router";
 // import { getAuth } from "firebase/auth";
@@ -81,19 +87,16 @@ const ListarInscripciones = ({ match: { params: { identificador } } }) => {
 
 
     const columnas = useMemo(() => [
+       
+       
         {
-            name: '_ID',
-            selector: row => row._id,
+            name: 'Nombre Estudiante',
+            selector: row => row.nombreEstudiante,
             sorteable: true
         },
         {
-            name: 'idProyecto',
-            selector: row => row.idProyecto,
-            sorteable: true
-        },
-        {
-            name: 'idEstudiante',
-            selector: row => row.idEstudiante,
+            name: 'Identificación Estudiante',
+            selector: row => row.identificacionEstudiante,
             sorteable: true
         },
         {
@@ -101,16 +104,7 @@ const ListarInscripciones = ({ match: { params: { identificador } } }) => {
             selector: row => row.estado,
             sorteable: true
         },
-        {
-            name: 'fdechaIngreso',
-            selector: row => row.fdechaIngreso,
-            sorteable: true
-        },
-        {
-            name: 'fechaEgreso',
-            selector: row => row.fechaEgreso,
-            sorteable: true
-        },
+       
         {
             name: "Aceptar",
             sortable: false,
@@ -145,11 +139,10 @@ const ListarInscripciones = ({ match: { params: { identificador } } }) => {
     query ($idProject: String) {
         inscriptionsByProject(idProject: $idProject) {
           _id
-          idProyecto
-          idEstudiante
+          nombreEstudiante
+          identificacionEstudiante
           estado
-          fdechaIngreso
-          fechaEgreso
+         
         }
       }
   `;
@@ -437,6 +430,17 @@ const ListarInscripciones = ({ match: { params: { identificador } } }) => {
     };
     return <div className="table-responsive"><br />
 
+
+    <Card>
+        <GridItem>
+          <CardHeader color="info">
+
+            <h4>Lista de Inscripciones Proyecto {identificador}</h4>
+
+          </CardHeader>
+    
+      
+
         <div className="barrabusqueda">
             <input type="text" placeholder="Buscar Producto" className="textfield" name="busqueda" value={busqueda} onChange={onChange} />
 
@@ -464,7 +468,8 @@ const ListarInscripciones = ({ match: { params: { identificador } } }) => {
         {/* <button type="button" name="borrar" className="btnUtil" disabled={borrar} onClick={() => handleDelete(dato.current)}>
             Borrar
         </button> */}
-
+  </GridItem >
+      </Card>
         <div>
 
             <Modal isOpen={modalActualizar}>

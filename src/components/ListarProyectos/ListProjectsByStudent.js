@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 // import { useAuthState } from "react-firebase-hooks/auth";
 // import { useHistory } from "react-router";
 // import { getAuth } from "firebase/auth";
-import { getRol, getIdentificacion} from 'helpers/localStorage';
+import { getRol, getIdentificacion } from 'helpers/localStorage';
 
 import {
     Button,
@@ -37,56 +37,43 @@ changeProjectState(projectId: $projectId, newState: $newState)
 }
 `;
 
-/* const INSCRIBIRME = gql`  
+const INSCRIBIRME = gql`  
 mutation AddInscription($studentId: String, $projectId: String) {
     addInscription(studentId: $studentId, projectId: $projectId)
   }
-`; */
-
-const MY_PROJECTS = gql`
-query ($findProjectByStudenIdId: String) {
-    findProjectByStudentId(id: $findProjectByStudenIdId) {
-      identificador
-      nombre
-      fase
-      lider {
-        nombre
-      }
-      estado
-    }
-  }
-`
+`;
 
 //FIN: GQL MUTACIONESSS
 
-const MyProjects = props => {
-  
-    // INICIO: useMutation
-    /* const [changeProjectState] = useMutation(CHANGESTATE); */
-    /* const [addInscription] = useMutation(INSCRIBIRME); */
+const ListProjects = props => {
 
-   
+    // INICIO: useMutation
+    const [changeProjectState] = useMutation(CHANGESTATE);
+    const [addInscription] = useMutation(INSCRIBIRME);
     // FIN : useMutation
 
     const rol = getRol();
-    const idUser = props.id;
+    const idUser = getIdentificacion();
 
     const handleRowClick = (row) => {
 
-        if(rol === "ADMINISTRADOR"){
-        console.log("r", row);
-        const {identificador, estado} = row;  
+        if (rol === "ADMINISTRADOR") {
+            console.log("r", row);
+            const { identificador, estado } = row;
 
             let projectId = identificador;
-            let newState= (estado === "ACTIVO") ? "INACTIVO":"ACTIVO";     
-    
-             
-       /*      changeProjectState({
+            let newState = (estado === "ACTIVO") ? "INACTIVO" : "ACTIVO";
+
+
+            changeProjectState({
                 variables: { projectId, newState }
-            });     */
-            history.go(0);  
-        }               
+            });
+            history.go(0);
+        }
     }
+
+
+
 
 
 
@@ -96,14 +83,18 @@ const MyProjects = props => {
         {
             name: 'ID',
             selector: row => row.identificador,
-            sorteable: true            
+            sorteable: true
         },
         {
             name: 'Nombre del Proyecto',
             selector: row => row.nombre,
             sorteable: true
         },
-        
+        {
+            name: 'Presupuesto',
+            selector: row => row.presupuesto,
+            sorteable: true
+        },
         {
             name: 'Estado',
             selector: row => row.estado,
@@ -115,18 +106,27 @@ const MyProjects = props => {
             sorteable: true
         },
         {
-            name: 'Lider',
-            selector: row => row.lider.nombre,
+            name: 'Integrantes',
+            selector: row => row.integrantes.length,
             sorteable: true
         },
-       
-       /*  {
+        {
+            name: 'Fecha Inicio',
+            selector: row => row.fechaInicio,
+            sorteable: true
+        },
+        {
+            name: 'Fecha Fin',
+            selector: row => row.fechaFin,
+            sorteable: true
+        },
+        {
             name: "Activar/Desactivar",
             sortable: false,
             allowOverflow: false,
             ignoreRowClick: true,
             cell: (row, index, column, id) => <Button data-tag="allowRowEvents" onClick={() => { handleRowClick(row) }}>A/D</Button>
-        }, */
+        },
 
 
     ]);
@@ -143,35 +143,98 @@ const MyProjects = props => {
 
 
 
-    
-
- 
-  let proyectosFiltrados = []
-
-  console.log("ID USER:", idUser)
-    const { loading, error, data } = useQuery(MY_PROJECTS, {variables:{findProjectByStudenIdId:idUser}});
-
-    try {
-        proyectosFiltrados = data.findProjectByStudentId;
-        console.log("Data todos los proyectos del lider:", data);
-    } catch {
-        console.log('estoy en error')
+    const PROYECTOS = gql`
+    query Query {
+        proyectos {
+            identificador
+            nombre
+            integrantes{
+                nombre            
+            }
+            presupuesto
+            estado
+            fase
+            avances {
+                fecha
+                descripcion
+            }
+            lider {
+                nombre
+            }
+            fechaInicio
+            fechaFin
+        }
     }
   
-    
-    
+  `;
+
+
+    const PROYECTS_BY_LIDER_ID = gql`
+  query FindProjectByLeaderId($leader: String) {
+    findProjectByLeaderId(leader: $leader) {
+      identificador
+      nombre
+      integrantes {
+        nombre
+      }
+      estado
+      avances {
+        fecha
+        descripcion
+        observaciones
+      }
+      lider {
+        nombre
+      }
+      objetivosGenerales
+      objetivosEspecificos
+      presupuesto
+      fase
+      fechaInicio
+      fechaFin
+    }
+  }
+  `
+    let proyectosFiltrados = []
+
+    if (rol != "ESTUDIANTE") {
+        const { loading, error, data } = useQuery(PROYECTOS);
+        try {
+            proyectosFiltrados = data.proyectos;
+            console.log("Data Todos los proyectos:", data);
+        } catch {
+            console.log('estoy en error')
+        }
+    }
+    else {
+        const { loading, error, data } = useQuery(PROYECTS_BY_LIDER_ID, { variables: { leader: idUser } });
+        if (loading) return null
+        try {
+            if (data) {
+                proyectosFiltrados = data.findProjectByLeaderId;
+                console.log("Data todos los proyectos del lider:", data);
+            }else{
+                proyectosFiltrados =[{}];
+            }
+
+        } catch {
+            console.log('estoy en error')
+        }
+    }
+
+
 
     //if (loading) return null;
-   /*  if (error) return `Error! ${error}`; */
- 
-    
-   
+    /*  if (error) return `Error! ${error}`; */
+
+
+
 
     // const auth = getAuth();
     // const [user, loading, error] = useAuthState(auth);
     // const history = useHistory();
-    /* const [newVal, setNewVal] = useState(0);
-    const [isLoaded, setIsLoaded] = useState(false); */
+    const [newVal, setNewVal] = React.useState(0);
+    const [isLoaded, setIsLoaded] = React.useState(false);
     const [errors, setErrors] = useState();
     const [busqueda, setBusqueda] = useState();
     const [productosFiltrados, setProductosFiltrados] = useState([]);
@@ -277,22 +340,55 @@ const MyProjects = props => {
     });
 
 
-   
+    const handleDelete = useCallback(() => {
+        console.log(dato);
+        console.log(dato.length);
+        console.log("dc", dato.current);
+
+        if (window.confirm(`Está usted seguro de borrar:\r ${dato.current.map(r => r.nombreProducto)}?`)) {
+            let msg = [];
+            let arregloProductos = dato.current;
+            console.log("AP", arregloProductos);
+            arregloProductos.map(registro => {
+                msg.push(registro.nombreProducto);
+                eliminarProducto(registro._id);
+            });
+            alert("Se eliminaron: " + msg.join(","));
+            cargarProductos();
+            dato.current.splice(0, dato.current.length);
+        }
+    });
 
     const history = useHistory();
-  /*   const mostrarAvances = useCallback(async() => {
+    const mostrarModalActualizar = useCallback(async () => {
+
+        if (rol != 'ESTUDIANTE') {
             console.log('soy indefinido', dato.current[0].identificador)
-            return history.push(`/avances/${dato.current[0].identificador}`)
+            return history.push(`list-projects/${dato.current[0].identificador}`)
+        }
 
-    }); */
+        const datica = await addInscription({
+            variables: {
+                "studentId": getIdentificacion(),
+                "projectId": dato.current[0].identificador
+            }
+        })
+        alert(datica.data.addInscription)
+        // dato.current.map(registro => {
+        //     setModalActualizar(true);
+        //     setForm(registro);
+        //     id.current = registro._id;
+        //     console.log(id.current);
+        // }); //this.setState({ modalActualizar: true, form: dato });
+    });
 
-const mostrarModalInscripciones = useCallback(() =>{
-    history.push(`/user/inscriptions/${dato?.current[0].identificador}`);
-})
+    const mostrarModalInscripciones = useCallback(() => {
+        history.push(`/user/inscriptions/${dato?.current[0].identificador}`);
+    })
 
-const mostrarAvances  = useCallback(() =>{
-    history.push(`/user/avances/${dato?.current[0].identificador}`);
-})
+    const mostrarModalAvances = useCallback(() => {
+        history.push(`/user/avances/${dato?.current[0].identificador}`);
+    })
 
 
     const cerrarModalActualizar = useCallback(() => {
@@ -302,8 +398,72 @@ const mostrarAvances  = useCallback(() =>{
         setEditar(true);
     });
 
-    
-   
+    const handleUpdate = useCallback((id, form) => {
+        console.log("body:", dato.current);
+        cerrarModalActualizar(); // Simple POST request with a JSON body using fetch
+
+        user.getIdToken(true).then(token => {
+            const requestOptions = {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(form)
+            }; //console.log(requestOptions);
+            //alert("Producto creado exitosamente");
+
+            fetch(`${BASE_URL}${PATH_PRODUCTS}/${id}`, requestOptions)
+                .then(result => result.json())
+                .then(result => {
+                    console.log("result: ", result);
+                    cargarProductos();
+                    dato.current.splice(0, dato.current.length);
+                    setBorrar(true);
+                    setEditar(true);
+                    alert("Producto Actualizado");
+                    setNewVal(newVal + 1);
+                }, error => {
+                    console.log(error);
+                });
+        })
+    });
+    const cargarProductos = async () => {
+
+        user.getIdToken(true).then(async (token) => {
+            const requestOptions = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            };
+
+            const response = await fetch(`${BASE_URL}${PATH_PRODUCTS}`, requestOptions);
+            const result = await response.json();
+            console.log("R", result);
+            setProductos(result);
+            setProductosFiltrados(result);
+        })
+        /* fetch(`${BASE_URL}${PATH_PRODUCTS}`)
+          .then(result => result.json())
+          .then(
+            (result) => {
+              this.setState({
+                productos: result
+              });
+              console.log("result: ",result);
+              console.log("productos en cargarProductos: ",this.state.productos)
+             },
+            // Nota: es importante manejar errores aquí y no en 
+            // un bloque catch() para que no interceptemos errores
+            // de errores reales en los componentes.
+            (error) => {
+              console.log(error);
+            }
+          ) */
+    };
+
     const customStyles = {
         rows: {
             style: {
@@ -324,9 +484,9 @@ const mostrarAvances  = useCallback(() =>{
         },
     };
 
-    const rol1 = (rol==="ESTUDIANTE")?"none":"";
+    const rol1 = (rol === "ESTUDIANTE") ? "none" : "";
 
-    
+
     return <div className="table-responsive"><br />
 
         <div className="barrabusqueda">
@@ -335,7 +495,7 @@ const mostrarAvances  = useCallback(() =>{
         </div>
 
 
-       <DataTable
+        <DataTable
             columns={columnas}
             data={proyectosFiltrados}
             pagination paginationComponentOptions={paginacionopciones}
@@ -347,20 +507,19 @@ const mostrarAvances  = useCallback(() =>{
             fixedHeaderScrollHeight="600px"
             noDataComponent="No se encontraron productos"
 
-        /> 
+        />
 
-
-        <button type="button" name="editar" className="btnUtil" disabled={editar} onClick={() => mostrarAvances(dato.current)}>
-            {rol == 'ESTUDIANTE' ? 'Listar Avances' : 'Editar'}
+        <button type="button" name="editar" className="btnUtil" disabled={editar} onClick={() => mostrarModalActualizar(dato.current)}>
+            {rol == 'ESTUDIANTE' ? 'Inscribirme' : 'Editar'}
         </button>
 
-   
-      <button type="button" name="borrar" style={(rol==="ESTUDIANTE")?{display:"none"}:{display:""}} className="btnUtil" disabled={borrar}  onClick={() => mostrarModalInscripciones(dato.current)}>
-        Listas Inscripciones</button>
-     
+
+        <button type="button" name="borrar" style={(rol === "ESTUDIANTE" || rol === "ADMINISTRADOR") ? { display: "none" } : { display: "" }} className="btnUtil" disabled={borrar} onClick={() => mostrarModalInscripciones(dato.current)}>
+            Listas Inscripciones</button>
 
 
-        <button type="button" name="borrar" style={(rol==="ESTUDIANTE")?{display:"none"}:{display:""}} className="btnUtil" disabled={borrar}  onClick={() => mostrarModalAvances(dato.current)}>
+
+        <button type="button" name="borrar" style={(rol === "ESTUDIANTE" || rol === "ADMINISTRADOR") ? { display: "none" } : { display: "" }} className="btnUtil" disabled={borrar} onClick={() => mostrarModalAvances(dato.current)}>
             Listar Avances
         </button>
 
@@ -440,4 +599,4 @@ const mostrarAvances  = useCallback(() =>{
     </div>;
 };
 
-export default MyProjects;
+export default ListProjects;

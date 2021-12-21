@@ -59,7 +59,7 @@ const dashboardRoutes = [
     icon: AssignmentTurnedIn,
     component: Typography,
     layout: "/user",
-    permisos: 'ESTUDIANTE, LIDER'
+    permisos: 'ESTUDIANTE'
   },
   /* {
     path: "/inscriptions",
@@ -75,7 +75,7 @@ const dashboardRoutes = [
     icon: School,
     component: Maps,
     layout: "/user",
-    permisos: 'ESTUDIANTE'
+    permisos: ''
   },
   {
     path: "/advances",
@@ -83,7 +83,7 @@ const dashboardRoutes = [
     icon: NextWeek,
     component: Icons,
     layout: "/user",
-    permisos: 'LIDER'
+    permisos: ''
   },
   {
     path: "/my-advances",
@@ -91,7 +91,7 @@ const dashboardRoutes = [
     icon: CloudUpload,
     component: Maps,
     layout: "/user",
-    permisos: 'ESTUDIANTE'
+    permisos: ''
   },
   {
     path: "/list-users",

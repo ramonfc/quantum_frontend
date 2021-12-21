@@ -75,9 +75,14 @@ const Login = () => {
                 }
             })
             console.log('token expirado?: ', response.data.error)
-            if (response.data.error) getAccessToken()
-            else getUserType(user.token)
-
+            if (response.data.error) {
+                localStorage.clear();
+                //getAccessToken()
+            }
+            
+            else {
+                getUserType(user.token)
+            }
         } catch {
             console.log('catchhh verifyToken')
         }
