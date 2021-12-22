@@ -49,7 +49,7 @@ const Login = () => {
 
     const getAccessToken = async () => {
         try {
-            const response = await axios.post('http://localhost:9093/api/login', { //authServer
+            const response = await axios.post('https://server-auth-quantum-f4fzhsmhma-uc.a.run.app/api/login', { //authServer
                 email: email,
                 clave: password
             });
@@ -69,7 +69,7 @@ const Login = () => {
 
     const verifyToken = async (token) => {
         try {
-            const response = await axios.get('http://localhost:9093/api/verify', {
+            const response = await axios.get('https://server-auth-quantum-f4fzhsmhma-uc.a.run.app/api/verify', {
                 headers: {
                     'authorization': token
                 }
@@ -91,7 +91,7 @@ const Login = () => {
     const getUserType = async (token) => {
 
         try {
-            const response = await axios.get('http://localhost:9093/api/verify', {
+            const response = await axios.get('https://server-auth-quantum-f4fzhsmhma-uc.a.run.app/api/verify', {
                 headers: {
                     'authorization': token
                 }

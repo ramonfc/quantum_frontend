@@ -32,7 +32,7 @@ import {
 import Carrusel from "components/Carrusel/Carrusel";
 
 const client = new ApolloClient({
-  uri: 'http://18.223.255.153:5001/graphql',
+  uri: 'https://quantum-backend-f4fzhsmhma-uc.a.run.app/graphql',
   cache: new InMemoryCache()
 });
 
